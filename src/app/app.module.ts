@@ -7,18 +7,23 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
 import { BalanceComponent } from './balance/balance.component';
 import { BalanceListComponent } from './balance/balance-list/balance-list.component';
+import { BalanceChartsComponent } from './balance/balance-charts/balance-charts.component';
+import { NgxChartsModule } from "@swimlane/ngx-charts";
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     BalanceComponent,
-    BalanceListComponent
+    BalanceListComponent,
+    BalanceChartsComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgxChartsModule
+
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,10 +1,12 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-12">
-      <h2>Crypto Balance title</h2>
-      <ul>
-        <li *ngFor="let crypto of balance">{{ crypto.name }}</li>
-      </ul>
+    <div class="col-md-7">
+      <app-balance-list></app-balance-list>
+    </div>
+    <div class="col-md-5">
+     <app-balance-charts></app-balance-charts>
+      
     </div>
   </div>
+  
 </div>

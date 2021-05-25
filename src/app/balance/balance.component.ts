@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { BalanceService } from './balance.service';
-import { CryptoCurrency } from './crypto-currency.model';
 
 @Component({
   selector: 'app-balance',
@@ -8,10 +6,8 @@ import { CryptoCurrency } from './crypto-currency.model';
   styleUrls: ['./balance.component.css'],
 })
 export class BalanceComponent implements OnInit {
-  balance: CryptoCurrency[] = [];
-  constructor(private balanceService: BalanceService) {}
+  constructor() {}
 
   ngOnInit(): void {
-    this.balance = this.balanceService.getBalance()
   }
 }
