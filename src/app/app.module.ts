@@ -8,7 +8,10 @@ import { HeaderComponent } from './header/header.component';
 import { BalanceComponent } from './balance/balance.component';
 import { BalanceListComponent } from './balance/balance-list/balance-list.component';
 import { BalanceChartsComponent } from './balance/balance-charts/balance-charts.component';
-import { NgxChartsModule } from "@swimlane/ngx-charts";
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { BalanceItemComponent } from './balance/balance-list/balance-item/balance-item.component';
+import { MatSliderModule } from '@angular/material/slider';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -17,15 +20,17 @@ import { NgxChartsModule } from "@swimlane/ngx-charts";
     BalanceComponent,
     BalanceListComponent,
     BalanceChartsComponent,
+    BalanceItemComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    NgxChartsModule
-
+    NgxChartsModule,
+    MatSliderModule,
+    FormsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

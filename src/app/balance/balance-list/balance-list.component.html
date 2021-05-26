@@ -1,4 +1,4 @@
 <h2>Crypto Balance title</h2>
-      <ul>
-        <li *ngFor="let crypto of balance">{{ crypto.name }}</li>
-      </ul>
+
+        <app-balance-item *ngFor="let crypto of balance" [cryptoCurrency]="crypto"></app-balance-item>
+
