@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BalanceItemComponent } from './balance-item.component';
+import { AddCoinComponent } from './add-coin.component';
 
-describe('BalanceItemComponent', () => {
-  let component: BalanceItemComponent;
-  let fixture: ComponentFixture<BalanceItemComponent>;
+describe('AddCoinComponent', () => {
+  let component: AddCoinComponent;
+  let fixture: ComponentFixture<AddCoinComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ BalanceItemComponent ]
+      declarations: [ AddCoinComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BalanceItemComponent);
+    fixture = TestBed.createComponent(AddCoinComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

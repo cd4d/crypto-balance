@@ -7,7 +7,6 @@ import { CryptoCurrency } from './crypto-currency.model';
 })
 export class BalanceService {
   public total: number = 0;
-  //cryptoAmount = new Subject<number>();
   balanceChanged = new Subject<CryptoCurrency[]>();
   constructor() {}
   private cryptoBalance: CryptoCurrency[] = [
@@ -20,7 +19,7 @@ export class BalanceService {
       subUnitToUnit: 100000000,
     },
     {
-      name: 'Ethererum',
+      name: 'Ethereum',
       ticker: 'ETH',
       rateUSD: 2000,
       amount: 3,
@@ -38,16 +37,17 @@ export class BalanceService {
   getBalance() {
     return [...this.cryptoBalance];
   }
-  changeAmount(ticker: string,  value: number) {
+  changeAmount(ticker: string, value: number) {
+    // console.log('changing amount ' + value);
+    
     this.cryptoBalance = this.cryptoBalance.map((crypto) => {
       if (crypto.ticker === ticker) {
-        crypto.amount = value
+        crypto.amount = value;
       }
       return crypto;
     });
-    this.calculateBalance()
-    this.balanceChanged.next(this.cryptoBalance)
-    
+    this.calculateBalance();
+    this.balanceChanged.next(this.cryptoBalance);
   }
   calculateBalance() {
     const currentBalance = [...this.cryptoBalance];
@@ -68,5 +68,25 @@ export class BalanceService {
       });
     }
     return currentBalance;
+  }
+   addSteps(coinList: CryptoCurrency[]):CryptoCurrency[] {
+    let newCoinList = coinList.map((coin) => {
+      if (coin.rateUSD && coin.rateUSD > 0) {
+        // minValue and maxValue for slider (not implemented)
+        coin.minValue =
+          coin.rateUSD > 1 ? +(1 / coin.rateUSD).toFixed(5) : coin.rateUSD;
+        coin.maxValue = +(1000000 / coin.rateUSD).toFixed(2); // up to $1 million for each coin
+        coin.editStep = this.defaultStep(coin.rateUSD);
+      }
+      return coin
+    })    
+    return newCoinList
+  }
+   defaultStep(rate: number): number {
+    if (rate <= 1) {
+      return rate;
+    }
+
+    return +(1 / rate).toFixed(5);
   }
 }

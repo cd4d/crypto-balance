@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DataFetchingService } from '../data-fetching.service';
 
 @Component({
   selector: 'app-balance',
@@ -6,8 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./balance.component.css'],
 })
 export class BalanceComponent implements OnInit {
-  constructor() {}
+  constructor(private dataFetchingService:DataFetchingService) {}
 
   ngOnInit(): void {
+  }
+  onFetchOneCrypto(){
+    this.dataFetchingService.fetchOneCryptoCurrency('bitcoin')
   }
 }

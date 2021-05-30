@@ -9,9 +9,14 @@ import { BalanceComponent } from './balance/balance.component';
 import { BalanceListComponent } from './balance/balance-list/balance-list.component';
 import { BalanceChartsComponent } from './balance/balance-charts/balance-charts.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { BalanceItemComponent } from './balance/balance-list/balance-item/balance-item.component';
-import { MatSliderModule } from '@angular/material/slider';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { TableModule } from 'primeng/table';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { DialogService } from 'primeng/dynamicdialog';
+import { AddCoinComponent } from './balance/balance-list/add-coin/add-coin.component';
 
 @NgModule({
   declarations: [
@@ -20,17 +25,22 @@ import { FormsModule } from '@angular/forms';
     BalanceComponent,
     BalanceListComponent,
     BalanceChartsComponent,
-    BalanceItemComponent,
+    AddCoinComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     NgxChartsModule,
-    MatSliderModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule,
+    // PrimeNG
+    TableModule,
+    ConfirmDialogModule,
+    DynamicDialogModule,
   ],
-  providers: [],
+
+  providers: [ConfirmationService, DialogService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

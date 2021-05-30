@@ -1,4 +1,103 @@
 <h2>Crypto Balance title</h2>
 
-        <app-balance-item *ngFor="let crypto of balance" [cryptoCurrency]="crypto"></app-balance-item>
 
+
+<button class="btn btn-primary" type="button" (click)="onAddCoin()">
+  Add coin
+</button>
+
+<p-table [value]="balance">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Name</th>
+      <th>Ticker</th>
+      <th>Rate (USD)</th>
+      <th>Amount</th>
+      <th>Value</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-coin>
+    <tr>
+      <td>{{ coin.name }}</td>
+      <td>{{ coin.ticker }}</td>
+      <td>{{ coin.rateUSD | currency: "USD":"symbol":"1.0-2" }}</td>
+      <td pEditableColumn>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input
+              #inputAmount
+              min="0"
+              type="number"
+              [(ngModel)]="coin.amount"
+              name="amount"
+              step="{{ coin.editStep }}"
+              (change)="onChangeAmount(coin.ticker, +inputAmount.value)"
+              (blur)="onChangeAmount(coin.ticker, +inputAmount.value)"
+            />
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{ coin.amount }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>{{ coin.valueUSD | currency: "USD":"symbol":"1.0-2" }}</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<!-- <p-table [value]="balance" [columns]="columnsToDisplay">
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th *ngFor="let col of columns">{{ col.header }}</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-coin let-columns="columns">
+    <tr>
+      <th *ngFor="let col of columns">{{ coin[col.field] }}</th>
+    </tr>
+  </ng-template>
+</p-table> -->
+
+<!-- <table mat-table [dataSource]="balance" class="crypto-table">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let cryptoCurrency">{{ cryptoCurrency.name }}</td>
+  </ng-container>
+  <ng-container matColumnDef="ticker">
+    <th mat-header-cell *matHeaderCellDef>Ticker</th>
+    <td mat-cell *matCellDef="let cryptoCurrency">
+      {{ cryptoCurrency.ticker }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="rateUSD">
+    <th mat-header-cell *matHeaderCellDef>Price (USD)</th>
+    <td mat-cell *matCellDef="let cryptoCurrency">
+      {{ cryptoCurrency.rateUSD | currency: "USD":"symbol":"1.0-2" }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="amount">
+    <th mat-header-cell *matHeaderCellDef>Amount</th>
+    <td mat-cell *matCellDef="let cryptoCurrency">
+      <input
+        #inputAmount
+        matInput
+        min="0"
+        type="number"
+        [(ngModel)]="cryptoCurrency.amount"
+        name="amount"
+        step="sliderStep"
+        (change)="onChangeAmount(cryptoCurrency.ticker, +inputAmount.value)"
+        (blur)="onChangeAmount(cryptoCurrency.ticker, +inputAmount.value)"
+      />
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="valueUSD">
+    <th mat-header-cell *matHeaderCellDef>Value</th>
+    <td mat-cell *matCellDef="let cryptoCurrency">
+      {{ cryptoCurrency.valueUSD | currency: "USD":"symbol":"1.0-2" }}
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+  <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+</table> -->
+<!-- <app-balance-item *ngFor="let crypto of balance" [cryptoCurrency]="crypto"></app-balance-item> -->
