@@ -14,6 +14,7 @@ export class DataFetchingService {
     // return this.http.get<Coin[]>(this.COINGECKO_URL + '/coins/list', {
     //   params: new HttpParams().set('include_platform', 'false'),
     // });
+    // grab the list from local file instead
     return this.http.get<[]>('./assets/coins-list.json');
   }
   fetchOneCryptoCurrency(name: string) {
@@ -30,19 +31,17 @@ export class DataFetchingService {
       this.getCoinList().subscribe((coins) => {
         this.coinList = coins;
         localStorage.setItem('coinsList', JSON.stringify(coins));
-        console.log(this.coinList[0]);
-        return;
       });
     } else {
       // get coin list from localstorage
       console.log('getting coin list from localstorage');
-      const resJson = localStorage.getItem('coinsList');
-      if (resJson !== null) {
-        this.coinList = JSON.parse(resJson);
+      const localCoinsList = localStorage.getItem('coinsList');
+      if (localCoinsList !== null) {
+        this.coinList = JSON.parse(localCoinsList);
       }
     }
-
     console.log(this.coinList[0]);
+    return this.coinList
   }
 }
 

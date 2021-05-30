@@ -1,24 +1,24 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { DataFetchingService } from 'src/app/data-fetching.service';
 import { BalanceService } from '../balance.service';
 import { CryptoCurrency } from '../crypto-currency.model';
 
 import { Coin } from '../coin.model';
-import { ConfirmationService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AddCoinComponent } from './add-coin/add-coin.component';
 
 @Component({
   selector: 'app-balance-list',
   templateUrl: './balance-list.component.html',
   styleUrls: ['./balance-list.component.css'],
+  
 })
-export class BalanceListComponent implements OnInit {
+export class BalanceListComponent implements OnInit, OnDestroy {
   constructor(
     private balanceService: BalanceService,
     private dataFetchingService: DataFetchingService,
     public dialogService: DialogService
-  ) {}
+  ) { }
   balance: CryptoCurrency[] = [];
   // coin name to be added
   coinName: string = '';
@@ -30,6 +30,8 @@ export class BalanceListComponent implements OnInit {
   minValue: number | undefined;
   maxValue: number | undefined;
   sliderStep: number | undefined;
+  // for modal dialog
+  ref: DynamicDialogRef | undefined;
   @Input() cryptoCurrency: CryptoCurrency = {
     name: '',
     ticker: '',
@@ -41,23 +43,18 @@ export class BalanceListComponent implements OnInit {
     this.balance = this.balanceService.addSteps(receivedBalance);
     this.balanceService.calculateBalance();
     console.log(this.balance);
-    this.columnsToDisplay = [
-      { field: 'name', header: 'Name' },
-      { field: 'ticker', header: 'Ticker' },
-      { field: 'rateUSD', header: 'Price (USD)' },
-      { field: 'amount', header: 'Amount' },
-      { field: 'valueUSD', header: 'Value (USD)' },
-    ];
   }
   onAddCoin() {
     this.dataFetchingService.fetchCoinsList();
     this.coinList = this.dataFetchingService.coinList.slice(0, 10);
-    const ref = this.dialogService.open(AddCoinComponent, {
+    this.ref = this.dialogService.open(AddCoinComponent, {
       data: {
         test: 'something',
       },
-      header: 'this is a test',
+      header: 'Add a coin',
       width: '70%',
+      contentStyle: { "max-height": "500px", "overflow": "auto" },
+      baseZIndex: 10000
     });
   }
   onChangeAmount(ticker: string, value: number | null) {
@@ -66,33 +63,7 @@ export class BalanceListComponent implements OnInit {
       this.balanceService.changeAmount(ticker, value);
     }
   }
+  ngOnDestroy() {
+    if (this.ref) { this.ref.close() }
+  }
 }
-
-// onAddCoin() {
-//   this.dataFetchingService.fetchCoinsList();
-//   this.coinList = this.dataFetchingService.coinList.slice(0, 10);
-//   // open Modal
-//   const dialogref = this.dialog.open(ModalAddCoin, {
-//     width: '250px',
-//     data: { coinName: this.coinName, coinList: this.coinList },
-//   });
-// }
-// Material modal component
-// @Component({
-//   selector: 'modal-add-coin',
-//   templateUrl: './modal-add-coin.html',
-// })
-// export class ModalAddCoin implements OnInit{
-//   constructor(
-//     public dialogref: MatDialogRef<ModalAddCoin>,
-//     @Inject(MAT_DIALOG_DATA) public data: BalanceListComponent
-
-//   ) {}
-// ngOnInit(){
-//   console.log(this.data);
-
-// }
-//   onClose() {
-//     this.dialogref.close();
-//   }
-// }
