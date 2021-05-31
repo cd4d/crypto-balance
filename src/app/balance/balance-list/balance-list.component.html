@@ -1,10 +1,25 @@
 <h2>Crypto Balance title</h2>
 
+<label for="search-box">Coin Search TEST</label>
+<input #searchBox id="search-box" (input)="searchCoin(searchBox.value)" />
+<ul class="search-result">
+  <li *ngFor="let coin of coins$ | async">
+    {{ coin.name }}
+  </li>
+</ul>
 
-
-<button class="btn btn-primary" type="button" (click)="onAddCoin()">
+<button
+  class="btn btn-primary"
+  type="button"
+  (click)="toggleAddCoin()"
+  *ngIf="!addCoinFormVisible"
+>
   Add coin
 </button>
+<app-add-coin
+  *ngIf="addCoinFormVisible"
+  [onToggleAddCoin]="toggleAddCoin"
+></app-add-coin>
 
 <p-table [value]="balance">
   <ng-template pTemplate="header">

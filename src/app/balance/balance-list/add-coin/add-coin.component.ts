@@ -1,19 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import {DynamicDialogRef} from 'primeng/dynamicdialog';
-import {DynamicDialogConfig} from 'primeng/dynamicdialog';
+import { Component, Input, OnInit } from '@angular/core';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { BalanceService } from '../../balance.service';
 @Component({
   selector: 'app-add-coin',
   templateUrl: './add-coin.component.html',
-  styleUrls: ['./add-coin.component.css']
+  styleUrls: ['./add-coin.component.css'],
 })
 export class AddCoinComponent implements OnInit {
+  @Input() onToggleAddCoin!: () => void;
+  constructor(
+    private balanceService: BalanceService
+  ) // public ref: DynamicDialogRef, public config: DynamicDialogConfig
+  {}
 
-  constructor(private balanceService:BalanceService,
-    public ref: DynamicDialogRef, public config: DynamicDialogConfig
-    ) { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

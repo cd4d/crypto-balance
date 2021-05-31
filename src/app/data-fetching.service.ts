@@ -1,5 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { Coin } from './balance/coin.model';
 @Injectable({
   providedIn: 'root',
@@ -40,8 +42,37 @@ export class DataFetchingService {
         this.coinList = JSON.parse(localCoinsList);
       }
     }
-    console.log(this.coinList[0]);
-    return this.coinList
+    return this.coinList;
+  }
+  searchCoinList(searchedCoin: string): Observable<Coin[]> {
+    console.log('searching coin: ' + searchedCoin);
+
+    let result: Coin[] = []
+    if (!searchedCoin.trim()) {
+      // if not search term, return empty  coin.
+      return of([{ id: '', name: '', symbol: '' }]);
+    }
+    return this.http.get<Coin[]>('./assets/coins-list.json').pipe(
+      map((coinList) => {
+        coinList.map((coin) => {
+          if (coin && coin.id === searchedCoin.toLowerCase()) {
+            result.push(coin)
+          }
+        });        
+        return result
+      })
+    );
+    // const coinList = this.fetchCoinsList();
+    // if (coinList) {
+    //   coinList.map((coin) => {
+    //     if (coin.id === searchedCoin.toLowerCase()) {
+    //       console.log("coin found: ", coin);
+
+    //       return coin;
+    //     }
+    //     return null;
+    //   });
+    // }
   }
 }
 

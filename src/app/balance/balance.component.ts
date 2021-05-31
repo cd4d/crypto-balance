@@ -14,4 +14,7 @@ export class BalanceComponent implements OnInit {
   onFetchOneCrypto(){
     this.dataFetchingService.fetchOneCryptoCurrency('bitcoin')
   }
+  onSearchBTC(){
+    console.log(this.dataFetchingService.searchCoinList("Bitcoin"))
+  }
 }

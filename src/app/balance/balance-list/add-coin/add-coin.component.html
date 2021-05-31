@@ -1,2 +1,25 @@
+<div class="row mt-2 mb-2">
+  <div class="col-md-5">
+      <div class="col-md-12"> <input
+      id="add-coin-input-name"
+      type="text"
+      pInputText
+      placeholder="Coin name"
+    /></div>
+   
+  </div>
+  <div class="col-md-4">
+      <div class="col-md-12"><input
+      id="add-coin-input-amount"
+      type="number"
+      pInputText
+      placeholder="Amount"
+    /></div>
+    
+  </div>
 
-    <input id="add-coin-input" type="text" pInputText placeholder="Coin name"> 
+  <div class="col-md-2 offset-md-1 pt-2">
+    <span class="pi pi-check"></span>
+    <a style="cursor: pointer;" (click)="onToggleAddCoin()"><span class="pi pi-times"></span></a> 
+  </div>
+</div>
