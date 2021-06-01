@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DataFetchingService } from 'src/app/data-fetching.service';
 import { BalanceService } from '../balance.service';
 import { CryptoCurrency } from '../crypto-currency.model';
@@ -40,33 +40,16 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     rateUSD: 0,
     amount: 0,
   };
-  coins$!: Observable<Coin[]>;
-  private searchTerms = new Subject<string>();
 
   ngOnInit(): void {
     const receivedBalance = this.balanceService.getBalance();
     this.balance = this.balanceService.addSteps(receivedBalance);
     this.balanceService.calculateBalance();
 
-
-    this.coins$ = this.searchTerms.pipe(
-      // wait 300ms after each keystroke before considering the term
-      debounceTime(300),
-
-      // ignore new term if same as previous term
-      distinctUntilChanged(),
-
-      // switch to new search observable each time the term changes
-      switchMap((term: string) => this.dataFetchingService.searchCoinList(term)),
-    );
-
-
+    
   }
 
-  // Push a search term into the observable stream.
-  searchCoin(term: string): void {
-    this.searchTerms.next(term);
-  }
+  
 
   toggleAddCoin = (): void => {
     this.addCoinFormVisible = !this.addCoinFormVisible;

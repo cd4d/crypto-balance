@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { Coin } from './coin.model';
 import { CryptoCurrency } from './crypto-currency.model';
 
 @Injectable({
@@ -8,6 +9,7 @@ import { CryptoCurrency } from './crypto-currency.model';
 export class BalanceService {
   public total: number = 0;
   balanceChanged = new Subject<CryptoCurrency[]>();
+  newCoin!: CryptoCurrency;
   constructor() {}
   private cryptoBalance: CryptoCurrency[] = [
     {
@@ -39,7 +41,7 @@ export class BalanceService {
   }
   changeAmount(ticker: string, value: number) {
     // console.log('changing amount ' + value);
-    
+
     this.cryptoBalance = this.cryptoBalance.map((crypto) => {
       if (crypto.ticker === ticker) {
         crypto.amount = value;
@@ -69,7 +71,12 @@ export class BalanceService {
     }
     return currentBalance;
   }
-   addSteps(coinList: CryptoCurrency[]):CryptoCurrency[] {
+  addCoin(coin: Coin) {
+    this.newCoin.name = coin.name;
+    this.cryptoBalance.push(this.newCoin);
+  }
+
+  addSteps(coinList: CryptoCurrency[]): CryptoCurrency[] {
     let newCoinList = coinList.map((coin) => {
       if (coin.rateUSD && coin.rateUSD > 0) {
         // minValue and maxValue for slider (not implemented)
@@ -78,11 +85,11 @@ export class BalanceService {
         coin.maxValue = +(1000000 / coin.rateUSD).toFixed(2); // up to $1 million for each coin
         coin.editStep = this.defaultStep(coin.rateUSD);
       }
-      return coin
-    })    
-    return newCoinList
+      return coin;
+    });
+    return newCoinList;
   }
-   defaultStep(rate: number): number {
+  defaultStep(rate: number): number {
     if (rate <= 1) {
       return rate;
     }

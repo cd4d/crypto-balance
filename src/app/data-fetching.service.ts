@@ -44,35 +44,28 @@ export class DataFetchingService {
     }
     return this.coinList;
   }
-  searchCoinList(searchedCoin: string): Observable<Coin[]> {
-    console.log('searching coin: ' + searchedCoin);
-
-    let result: Coin[] = []
-    if (!searchedCoin.trim()) {
-      // if not search term, return empty  coin.
-      return of([{ id: '', name: '', symbol: '' }]);
+  searchCoinList(searchInput: string): Observable<Coin[]> {
+    let result: Coin[] = [];
+    if (!searchInput.trim()) {
+      // if not search term, return emptyarray.
+      return of([]);
     }
     return this.http.get<Coin[]>('./assets/coins-list.json').pipe(
       map((coinList) => {
         coinList.map((coin) => {
-          if (coin && coin.id === searchedCoin.toLowerCase()) {
-            result.push(coin)
+          if (coin && searchInput.trim().length > 1) {
+            // partial match
+            if (coin.id.includes(searchInput.toLowerCase())) {
+              result.push(coin);
+            }
+            if (coin.symbol.includes(searchInput.toLowerCase())) {
+              result.push(coin);
+            }
           }
-        });        
-        return result
+        });
+        return result;
       })
     );
-    // const coinList = this.fetchCoinsList();
-    // if (coinList) {
-    //   coinList.map((coin) => {
-    //     if (coin.id === searchedCoin.toLowerCase()) {
-    //       console.log("coin found: ", coin);
-
-    //       return coin;
-    //     }
-    //     return null;
-    //   });
-    // }
   }
 }
 

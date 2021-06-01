@@ -1,12 +1,5 @@
 <h2>Crypto Balance title</h2>
 
-<label for="search-box">Coin Search TEST</label>
-<input #searchBox id="search-box" (input)="searchCoin(searchBox.value)" />
-<ul class="search-result">
-  <li *ngFor="let coin of coins$ | async">
-    {{ coin.name }}
-  </li>
-</ul>
 
 <button
   class="btn btn-primary"
