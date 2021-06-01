@@ -1,7 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DataFetchingService } from 'src/app/data-fetching.service';
 import { BalanceService } from '../balance.service';
-import { CryptoCurrency } from '../crypto-currency.model';
 
 import { Coin } from '../coin.model';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -20,7 +19,7 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     private dataFetchingService: DataFetchingService,
     public dialogService: DialogService
   ) {}
-  balance: CryptoCurrency[] = [];
+  balance: Coin[] = [];
   addCoinFormVisible = false;
   // coin name to be added
   coinName: string = '';
@@ -34,12 +33,7 @@ export class BalanceListComponent implements OnInit, OnDestroy {
   sliderStep: number | undefined;
   // for modal dialog
   ref: DynamicDialogRef | undefined;
-  @Input() cryptoCurrency: CryptoCurrency = {
-    name: '',
-    ticker: '',
-    rateUSD: 0,
-    amount: 0,
-  };
+
 
   ngOnInit(): void {
     const receivedBalance = this.balanceService.getBalance();
@@ -51,7 +45,7 @@ export class BalanceListComponent implements OnInit, OnDestroy {
 
   
 
-  toggleAddCoin = (): void => {
+  toggleAddCoinVisibility = (): void => {
     this.addCoinFormVisible = !this.addCoinFormVisible;
   };
 

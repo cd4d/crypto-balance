@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { BalanceService } from '../balance.service';
-import { CryptoCurrency } from '../crypto-currency.model';
+import { Coin } from '../coin.model';
 
 @Component({
   selector: 'app-balance-charts',
@@ -10,7 +10,7 @@ import { CryptoCurrency } from '../crypto-currency.model';
 })
 export class BalanceChartsComponent implements OnInit, OnDestroy {
   constructor(private balanceService: BalanceService) {}
-  balance: CryptoCurrency[] = [];
+  balance: Coin[] = [];
   balanceChangedSub = new Subscription();
   // ngx charts options
   data: any[] = [];
@@ -50,7 +50,7 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
       this.data.push(newCrypto);
     });
   }
-  updateChartData(crypto: CryptoCurrency) {
+  updateChartData(crypto: Coin) {
     let newCrypto = { name: '', value: 0, label: '' };
     newCrypto.name = crypto.name;
     newCrypto.value = crypto.valueUSD ? crypto.valueUSD : 0;

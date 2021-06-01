@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Coin } from './coin.model';
-import { CryptoCurrency } from './crypto-currency.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BalanceService {
   public total: number = 0;
-  balanceChanged = new Subject<CryptoCurrency[]>();
-  newCoin!: CryptoCurrency;
-  constructor() {}
-  private cryptoBalance: CryptoCurrency[] = [
+  balanceChanged = new Subject<Coin[]>();
+  newCoin!: Coin;
+  constructor() { }
+  private cryptoBalance: Coin[] = [
     {
       name: 'Bitcoin',
-      ticker: 'BTC',
+      id: 'bitcoin',
+      symbol: 'BTC',
       rateUSD: 30000,
       amount: 0.5,
       subUnit: 'Satoshi',
@@ -22,7 +22,8 @@ export class BalanceService {
     },
     {
       name: 'Ethereum',
-      ticker: 'ETH',
+      id: 'ethereum',
+      symbol: 'ETH',
       rateUSD: 2000,
       amount: 3,
       subUnit: 'GWei',
@@ -30,7 +31,8 @@ export class BalanceService {
     },
     {
       name: 'Tether',
-      ticker: 'USDT',
+      id: 'tether',
+      symbol: 'USDT',
       rateUSD: 1,
       amount: 3000,
     },
@@ -39,11 +41,10 @@ export class BalanceService {
   getBalance() {
     return [...this.cryptoBalance];
   }
-  changeAmount(ticker: string, value: number) {
+  changeAmount(symbol: string, value: number) {
     // console.log('changing amount ' + value);
-
     this.cryptoBalance = this.cryptoBalance.map((crypto) => {
-      if (crypto.ticker === ticker) {
+      if (crypto.symbol === symbol) {
         crypto.amount = value;
       }
       return crypto;
@@ -55,7 +56,9 @@ export class BalanceService {
     const currentBalance = [...this.cryptoBalance];
     // calculate value of each hodling and calculate total
     currentBalance.map((crypto) => {
-      crypto.valueUSD = crypto.rateUSD * crypto.amount;
+      if (crypto.rateUSD && crypto.amount) {
+        crypto.valueUSD = crypto.rateUSD * crypto.amount;
+      }
       if (crypto.valueUSD) {
         this.total += crypto.valueUSD;
       }
@@ -72,11 +75,13 @@ export class BalanceService {
     return currentBalance;
   }
   addCoin(coin: Coin) {
-    this.newCoin.name = coin.name;
+    //this.newCoin.name = coin.name;
     this.cryptoBalance.push(this.newCoin);
+    this.calculateBalance();
+    this.balanceChanged.next(this.cryptoBalance);
   }
 
-  addSteps(coinList: CryptoCurrency[]): CryptoCurrency[] {
+  addSteps(coinList: Coin[]): Coin[] {
     let newCoinList = coinList.map((coin) => {
       if (coin.rateUSD && coin.rateUSD > 0) {
         // minValue and maxValue for slider (not implemented)

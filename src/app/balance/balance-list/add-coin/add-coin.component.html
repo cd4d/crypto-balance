@@ -2,37 +2,26 @@
   <h6>Add coin</h6>
   <div class="col-md-5">
     <div class="col-md-12">
-      <input
-        pInputText
-        #searchBox
-        id="search-box"
-        (input)="searchCoin(searchBox.value)"
-        placeholder="Coin name"
-      />
-      <ul class="search-result">
-        <li *ngFor="let coin of coins$ | async">
-          <a (click)="selectCoin(coin)"></a>
-          {{ coin.name }}
-          {{ coin.symbol | uppercase }}
+      <input pInputText #searchBox id="search-box" (input)="searchCoin(searchBox.value)" placeholder="Coin name"
+        [value]="selectedCoin.name" />
+      <ul class="list-group">
+        <li class="list-group-item list-group-item-action" *ngFor="let coin of coins$ | async">
+          <a (click)="selectCoin(coin)">{{ coin.name }} {{ coin.symbol | uppercase }}</a>
+
+
         </li>
       </ul>
     </div>
   </div>
   <div class="col-md-4">
     <div class="col-md-12">
-      <input
-        id="add-coin-input-amount"
-        type="number"
-        pInputText
-        placeholder="Amount"
-      />
+      <input #coinAmount id="add-coin-input-amount" type="number" pInputText placeholder="Amount"
+        (change)="onChangeAmount(coinAmount.value)" />
     </div>
   </div>
 
-  <div class="col-md-2 offset-md-1 pt-2">
-    <span class="pi pi-check"></span>
-    <a style="cursor: pointer" (click)="onToggleAddCoin()"
-      ><span class="pi pi-times"></span
-    ></a>
+  <div class="col-md-2 offset-md-2 pt-2">
+    <a style="cursor: pointer" (click)="onAddCoin()"><span class="pi pi-check"></span></a>
+    <a style="cursor: pointer" (click)="onToggleAddCoinVisibility()"><span class="pi pi-times"></span></a>
   </div>
 </div>

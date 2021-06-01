@@ -55,7 +55,7 @@ export class DataFetchingService {
         coinList.map((coin) => {
           if (coin && searchInput.trim().length > 1) {
             // partial match
-            if (coin.id.includes(searchInput.toLowerCase())) {
+            if (coin.id && coin.id.includes(searchInput.toLowerCase())) {
               result.push(coin);
             }
             if (coin.symbol.includes(searchInput.toLowerCase())) {
