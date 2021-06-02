@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { DataFetchingService } from '../data-fetching.service';
 import { Coin } from './coin.model';
 
 @Injectable({
@@ -9,7 +10,7 @@ export class BalanceService {
   public total: number = 0;
   balanceChanged = new Subject<Coin[]>();
   newCoin!: Coin;
-  constructor() { }
+  constructor(private dataFetchingService: DataFetchingService) { }
   private cryptoBalance: Coin[] = [
     {
       name: 'Bitcoin',
@@ -74,11 +75,17 @@ export class BalanceService {
     }
     return currentBalance;
   }
+  public currentRate!:any
   addCoin(coin: Coin) {
     //this.newCoin.name = coin.name;
-    this.cryptoBalance.push(this.newCoin);
-    this.calculateBalance();
-    this.balanceChanged.next(this.cryptoBalance);
+    // get rate 
+    //this.dataFetchingService.getRates([coin.name.toLocaleLowerCase()], 'usd').subscribe(res => this.currentRate = res)
+    this.currentRate = this.dataFetchingService.getRates(['algorand'], 'usd').subscribe()
+    console.log(this.currentRate);
+
+    // this.cryptoBalance.push(this.newCoin);
+    // this.calculateBalance();
+    // this.balanceChanged.next(this.cryptoBalance);
   }
 
   addSteps(coinList: Coin[]): Coin[] {

@@ -11,7 +11,7 @@ export class DataFetchingService {
   private COINGECKO_URL: string = 'https://api.coingecko.com/api/v3';
   coinList: Coin[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
   getCoinList() {
     // return this.http.get<Coin[]>(this.COINGECKO_URL + '/coins/list', {
     //   params: new HttpParams().set('include_platform', 'false'),
@@ -26,11 +26,11 @@ export class DataFetchingService {
     );
   }
 
-  getRates(coinList: string[], currency:string) {
+  getRates(coinList: string[], currency: string) {
     // <{ [key: string]: { rate: number } }>
     // coingecko API is a GET request,
     const formattedCoinListForAPI: string = coinList.join('%2C');
-  
+
     return this.http.get(this.COINGECKO_URL + '/simple/price?ids=' + formattedCoinListForAPI + '&vs_currencies=' + currency.toLowerCase());
     // bugged
     // let httpParams = new HttpParams()

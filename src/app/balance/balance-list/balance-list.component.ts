@@ -5,7 +5,7 @@ import { BalanceService } from '../balance.service';
 import { Coin } from '../coin.model';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AddCoinComponent } from './add-coin/add-coin.component';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -18,9 +18,10 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     private balanceService: BalanceService,
     private dataFetchingService: DataFetchingService,
     public dialogService: DialogService
-  ) {}
+  ) { }
   balance: Coin[] = [];
   addCoinFormVisible = false;
+  balanceChangedSub = new Subscription();
   // coin name to be added
   coinName: string = '';
   // first 10 coins
@@ -39,11 +40,16 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     const receivedBalance = this.balanceService.getBalance();
     this.balance = this.balanceService.addSteps(receivedBalance);
     this.balanceService.calculateBalance();
+    this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
+      newBalance => {
+        this.balance = this.balanceService.addSteps(newBalance)
+        this.balanceService.calculateBalance()
+      }
+    )
 
-    
   }
 
-  
+
 
   toggleAddCoinVisibility = (): void => {
     this.addCoinFormVisible = !this.addCoinFormVisible;
