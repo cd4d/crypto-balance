@@ -15,13 +15,13 @@ export class AddCoinComponent implements OnInit, OnDestroy {
   @Input() onToggleAddCoinVisibility!: () => void;
   @Input() onSearchCoin!: (input: string) => void;
   private searchTerms = new Subject<string>();
-  selectedCoin: Coin = { name: '', symbol: '', id: '' }
+  selectedCoin: Coin = { name: '', symbol: '', id: '' };
   coins$!: Observable<Coin[]>;
 
   constructor(
     private balanceService: BalanceService,
     private dataFetchingService: DataFetchingService // public ref: DynamicDialogRef, public config: DynamicDialogConfig
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     // Search coin
@@ -44,21 +44,22 @@ export class AddCoinComponent implements OnInit, OnDestroy {
   selectCoin(coin: Coin) {
     this.selectedCoin = coin;
     // empty the resulting array by passing empty value
-    this.searchTerms.next('')
+    this.searchTerms.next('');
     console.log('selected coin ', this.selectedCoin);
   }
-  onAddCoin(){
+  onAddCoin() {
     console.log(this.selectedCoin);
-    
-    this.balanceService.addCoin(this.selectedCoin)
-  }
-  onChangeAmount(amount:string){
-    if(amount){
-      // convert string to number
-      this.selectedCoin.amount = +amount
+    if (this.selectedCoin.name && this.selectedCoin.amount) {
+      this.balanceService.addCoin(this.selectedCoin);
     }
   }
-  ngOnDestroy(){
-    this.searchTerms.unsubscribe()
+  onChangeAmount(amount: string) {
+    if (amount) {
+      // convert string to number
+      this.selectedCoin.amount = +amount;
+    }
+  }
+  ngOnDestroy() {
+    this.searchTerms.unsubscribe();
   }
 }

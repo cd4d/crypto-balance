@@ -8,7 +8,7 @@ import { Coin } from './balance/coin.model';
 })
 export class DataFetchingService {
   // https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd
-  private COINGECKO_URL = 'https://api.coingecko.com/api/v3';
+  private COINGECKO_URL: string = 'https://api.coingecko.com/api/v3';
   coinList: Coin[] = [];
 
   constructor(private http: HttpClient) {}
@@ -19,12 +19,26 @@ export class DataFetchingService {
     // grab the list from local file instead
     return this.http.get<[]>('./assets/coins-list.json');
   }
+
   fetchOneCryptoCurrency(name: string) {
-    this.http
-      .get(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${name}&vs_currencies=usd`
-      )
-      .subscribe((res) => console.log(res));
+    return this.http.get(
+      `https://api.coingecko.com/api/v3/simple/price?ids=${name}&vs_currencies=usd`
+    );
+  }
+
+  getRates(coinList: string[], currency:string) {
+    // <{ [key: string]: { rate: number } }>
+    // coingecko API is a GET request,
+    const formattedCoinListForAPI: string = coinList.join('%2C');
+  
+    return this.http.get(this.COINGECKO_URL + '/simple/price?ids=' + formattedCoinListForAPI + '&vs_currencies=' + currency.toLowerCase());
+    // bugged
+    // let httpParams = new HttpParams()
+    // .set('ids', formattedCoinListForAPI.toString())
+    // .set('vs_currencies', 'usd');
+    // return this.http.get(this.COINGECKO_URL + '/simple/price', {
+    //   params: httpParams,
+    // });
   }
 
   fetchCoinsList() {

@@ -7,14 +7,20 @@ import { DataFetchingService } from '../data-fetching.service';
   styleUrls: ['./balance.component.css'],
 })
 export class BalanceComponent implements OnInit {
-  constructor(private dataFetchingService:DataFetchingService) {}
+  constructor(private dataFetchingService: DataFetchingService) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+  onFetchOneCrypto() {
+    this.dataFetchingService
+      .fetchOneCryptoCurrency('bitcoin')
+      .subscribe((res) => console.log(res));
   }
-  onFetchOneCrypto(){
-    this.dataFetchingService.fetchOneCryptoCurrency('bitcoin')
+  onSearchBTC() {
+    this.dataFetchingService.searchCoinList('Bitcoin');
   }
-  onSearchBTC(){
-    console.log(this.dataFetchingService.searchCoinList("Bitcoin"))
+  testButton() {
+    this.dataFetchingService
+      .getRates(['bitcoin', 'ripple'], 'usd')
+      .subscribe((res) => console.log(res));
   }
 }
