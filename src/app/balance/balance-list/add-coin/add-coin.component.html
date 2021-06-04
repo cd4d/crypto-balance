@@ -1,27 +1,51 @@
 <div class="row mt-2 mb-2">
-  <h6>Add coin</h6>
+  <h6>
+    Add coin: {{ selectedCoin.name }}
+    {{ selectedCoin.name && selectedCoin.rateUSD && selectedCoin.rateUSD * +coinAmount.value | currency }}
+  </h6>
+
   <div class="col-md-5">
     <div class="col-md-12">
-      <input pInputText #searchBox id="search-box" (input)="searchCoin(searchBox.value)" placeholder="Coin name"
-        [value]="selectedCoin.name" />
+      <input
+        pInputText
+        #searchBox
+        id="search-box"
+        (input)="searchCoin(searchBox.value)"
+        placeholder="Coin name"
+        [value]="selectedCoin.name"
+      />
       <ul class="list-group">
-        <li class="list-group-item list-group-item-action" *ngFor="let coin of coins$ | async">
-          <a (click)="selectCoin(coin)">{{ coin.name }} {{ coin.symbol | uppercase }}</a>
-
-
+        <li
+          class="list-group-item list-group-item-action"
+          *ngFor="let coin of coins$ | async"
+        >
+          <a (click)="selectCoin(coin)"
+            >{{ coin.name }} {{ coin.symbol | uppercase }}
+          </a>
         </li>
       </ul>
     </div>
   </div>
   <div class="col-md-4">
     <div class="col-md-12">
-      <input #coinAmount id="add-coin-input-amount" type="number" pInputText placeholder="Amount"
-        (change)="onChangeAmount(coinAmount.value)" />
+      <input
+        pInputText
+        #coinAmount
+        id="add-coin-input-amount"
+        type="number"
+        min="0"
+        placeholder="Amount"
+        (change)="onChangeAmount(coinAmount.value)"
+      />
     </div>
   </div>
 
   <div class="col-md-2 offset-md-2 pt-2">
-    <a style="cursor: pointer" (click)="onAddCoin()"><span class="pi pi-check"></span></a>
-    <a style="cursor: pointer" (click)="onToggleAddCoinVisibility()"><span class="pi pi-times"></span></a>
+    <a style="cursor: pointer" (click)="onAddCoin()"
+      ><span class="pi pi-check"></span
+    ></a>
+    <a style="cursor: pointer" (click)="onToggleAddCoinVisibility()"
+      ><span class="pi pi-times"></span
+    ></a>
   </div>
 </div>

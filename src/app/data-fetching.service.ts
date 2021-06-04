@@ -3,6 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Coin } from './balance/coin.model';
+import { environment } from '../environments/environment';
+
+
 @Injectable({
   providedIn: 'root',
 })
@@ -11,7 +14,7 @@ export class DataFetchingService {
   private COINGECKO_URL: string = 'https://api.coingecko.com/api/v3';
   coinList: Coin[] = [];
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
   getCoinList() {
     // return this.http.get<Coin[]>(this.COINGECKO_URL + '/coins/list', {
     //   params: new HttpParams().set('include_platform', 'false'),
@@ -28,10 +31,22 @@ export class DataFetchingService {
 
   getRates(coinList: string[], currency: string) {
     // <{ [key: string]: { rate: number } }>
-    // coingecko API is a GET request,
+    // coingecko API is a GET request,     
+    // returns {
+    //   "bitcoin": {
+    //     "usd": 37789
+    //   }
+    // }
     const formattedCoinListForAPI: string = coinList.join('%2C');
 
-    return this.http.get(this.COINGECKO_URL + '/simple/price?ids=' + formattedCoinListForAPI + '&vs_currencies=' + currency.toLowerCase());
+    return this.http.get(
+      this.COINGECKO_URL +
+        '/simple/price?ids=' +
+        formattedCoinListForAPI +
+        '&vs_currencies=' +
+        currency.toLowerCase()
+    );
+
     // bugged
     // let httpParams = new HttpParams()
     // .set('ids', formattedCoinListForAPI.toString())
@@ -81,6 +96,16 @@ export class DataFetchingService {
       })
     );
   }
+
+// NEWS fetching
+// https://newsdata.io/api/1/news?apikey=YOUR_API_KEY&language=en&q=social%20AND%20pizza%20AND%20pasta
+fetchNews(coins:string[]){
+  const newsDataURL = 'https://newsdata.io/api/1/news?apikey=' + environment.apiNewsData
+  let httpParams = new HttpParams()
+  .set('language','en')
+  .set('q',coins[0])
+  return this.http.get(newsDataURL,{params:httpParams})
+}
 }
 
 // Response sample for BTC:

@@ -1,4 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { Observable, Subject } from 'rxjs';
@@ -15,9 +16,8 @@ export class AddCoinComponent implements OnInit, OnDestroy {
   @Input() onToggleAddCoinVisibility!: () => void;
   @Input() onSearchCoin!: (input: string) => void;
   private searchTerms = new Subject<string>();
-  selectedCoin: Coin = { name: '', symbol: '', id: '' };
+  selectedCoin: Coin = { name: '', symbol: '', id: '', rateUSD: 0 };
   coins$!: Observable<Coin[]>;
-
   constructor(
     private balanceService: BalanceService,
     private dataFetchingService: DataFetchingService // public ref: DynamicDialogRef, public config: DynamicDialogConfig
@@ -43,15 +43,27 @@ export class AddCoinComponent implements OnInit, OnDestroy {
   }
   selectCoin(coin: Coin) {
     this.selectedCoin = coin;
+    // get the rate of selected coin
+    this.dataFetchingService
+      .getRates([coin.id ? coin.id : coin.name.toLowerCase()], 'usd')
+      .subscribe((res) => {
+        Object.keys(res).forEach((key) => {
+          // https://fettblog.eu/typescript-better-object-keys/
+          this.selectedCoin.rateUSD = res[key as keyof object]['usd'];
+        });
+      });
+
     // empty the resulting array by passing empty value
     this.searchTerms.next('');
     console.log('selected coin ', this.selectedCoin);
   }
   onAddCoin() {
-    console.log(this.selectedCoin);
     if (this.selectedCoin.name && this.selectedCoin.amount) {
       this.balanceService.addCoin(this.selectedCoin);
     }
+    // reset selected coin
+    this.selectedCoin = { name: '', symbol: '', id: '', rateUSD: 0 };
+    this.onToggleAddCoinVisibility();
   }
   onChangeAmount(amount: string) {
     if (amount) {

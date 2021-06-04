@@ -10,7 +10,8 @@ export class BalanceService {
   public total: number = 0;
   balanceChanged = new Subject<Coin[]>();
   newCoin!: Coin;
-  constructor(private dataFetchingService: DataFetchingService) { }
+  private currentRate!: any;
+  constructor(private dataFetchingService: DataFetchingService) {}
   private cryptoBalance: Coin[] = [
     {
       name: 'Bitcoin',
@@ -75,17 +76,18 @@ export class BalanceService {
     }
     return currentBalance;
   }
-  public currentRate!:any
   addCoin(coin: Coin) {
-    //this.newCoin.name = coin.name;
-    // get rate 
-    //this.dataFetchingService.getRates([coin.name.toLocaleLowerCase()], 'usd').subscribe(res => this.currentRate = res)
-    this.currentRate = this.dataFetchingService.getRates(['algorand'], 'usd').subscribe()
-    console.log(this.currentRate);
-
-    // this.cryptoBalance.push(this.newCoin);
-    // this.calculateBalance();
-    // this.balanceChanged.next(this.cryptoBalance);
+    this.newCoin = coin;
+    if (!coin.rateUSD) {
+      this.dataFetchingService
+        .getRates([coin.id ? coin.id : coin.name.toLowerCase()], 'usd')
+        .subscribe((rate) => {
+          this.newCoin.rateUSD = Object.values(rate)[0]['usd'];
+        });
+    }
+    this.cryptoBalance.push(this.newCoin);
+    this.calculateBalance();
+    this.balanceChanged.next(this.cryptoBalance);
   }
 
   addSteps(coinList: Coin[]): Coin[] {

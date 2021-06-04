@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { pipe } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { DataFetchingService } from '../data-fetching.service';
 import { BalanceService } from './balance.service';
 
@@ -8,8 +10,10 @@ import { BalanceService } from './balance.service';
   styleUrls: ['./balance.component.css'],
 })
 export class BalanceComponent implements OnInit {
-  constructor(private dataFetchingService: DataFetchingService,
-    private balanceService: BalanceService) { }
+  constructor(
+    private dataFetchingService: DataFetchingService,
+    private balanceService: BalanceService
+  ) {}
 
   ngOnInit(): void {
     // get rates from list
@@ -23,10 +27,10 @@ export class BalanceComponent implements OnInit {
     this.dataFetchingService.searchCoinList('Bitcoin');
   }
   testButton() {
-    //   this.dataFetchingService
-    //     .getRates(['bitcoin', 'ripple'], 'usd')
-    //     .subscribe((res) => console.log(res));
-    // }
-    this.balanceService.addCoin({ name: 'Cardano', symbol: 'ADA' })
+    let formattedRates: { [key: string]: number } = {};
+    this.dataFetchingService
+      .fetchNews(['bitcoin'])
+      .subscribe((res) => console.log(res));
   }
+  // this.balanceService.addCoin({ name: 'Cardano', symbol: 'ADA' })
 }

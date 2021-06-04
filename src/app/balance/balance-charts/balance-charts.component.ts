@@ -32,29 +32,24 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
     // Subscribe to update crypto data
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
       (receivedBalance) => {
+        this.data = []
         receivedBalance.forEach((crypto) => {
-          const newCrypto = this.updateChartData(crypto);
-          this.data = this.data.map((el) => {
-            if (el.name === newCrypto.name) {
-              el = newCrypto;
-            }
-            return el;
-          });
+          const formattedCrypto = this.formatChartData(crypto);
+          this.data.push(formattedCrypto)
         });
       }
     );
-
+    // initialize chart data
     this.balance.forEach((crypto) => {
-      const newCrypto = this.updateChartData(crypto);
-
+      const newCrypto = this.formatChartData(crypto);
       this.data.push(newCrypto);
     });
   }
-  updateChartData(crypto: Coin) {
+  formatChartData(crypto: Coin) {
+    // format data to ngx-chart
     let newCrypto = { name: '', value: 0, label: '' };
     newCrypto.name = crypto.name;
     newCrypto.value = crypto.valueUSD ? crypto.valueUSD : 0;
-
     return newCrypto;
   }
   ngOnDestroy() {
