@@ -18,6 +18,7 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AddCoinComponent } from './balance/balance-list/add-coin/add-coin.component';
 import { InputTextModule } from 'primeng/inputtext';
+import { BalanceNewsComponent } from './balance/balance-news/balance-news.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { InputTextModule } from 'primeng/inputtext';
     BalanceListComponent,
     BalanceChartsComponent,
     AddCoinComponent,
+    BalanceNewsComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,10 +1,9 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Coin } from './balance/coin.model';
 import { environment } from '../environments/environment';
-
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +30,7 @@ export class DataFetchingService {
 
   getRates(coinList: string[], currency: string) {
     // <{ [key: string]: { rate: number } }>
-    // coingecko API is a GET request,     
+    // coingecko API is a GET request,
     // returns {
     //   "bitcoin": {
     //     "usd": 37789
@@ -97,15 +96,24 @@ export class DataFetchingService {
     );
   }
 
-// NEWS fetching
-// https://newsdata.io/api/1/news?apikey=YOUR_API_KEY&language=en&q=social%20AND%20pizza%20AND%20pasta
-fetchNews(coins:string[]){
-  const newsDataURL = 'https://newsdata.io/api/1/news?apikey=' + environment.apiNewsData
-  let httpParams = new HttpParams()
-  .set('language','en')
-  .set('q',coins[0])
-  return this.http.get(newsDataURL,{params:httpParams})
-}
+  // NEWS fetching
+  fetchNews(coins: string[]) {
+    // const newsDataURL = 'https://newsdata.io/api/1/news?apikey=' + environment.apiNewsData
+    const newsDataURL =
+      'https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/search/NewsSearchAPI';
+    let httpParams = new HttpParams()
+      .set('q', coins.join(','))
+      .set('pageNumber', '1')
+      .set('pageSize', '10')
+      .set('autoCorrect', 'true');
+    return this.http.get(newsDataURL, {
+      headers: new HttpHeaders({
+        'x-rapidapi-key': environment.rapidAPIKey,
+        'x-rapidapi-host': 'contextualwebsearch-websearch-v1.p.rapidapi.com',
+      }),
+      params: httpParams,
+    });
+  }
 }
 
 // Response sample for BTC:
