@@ -1,7 +1,4 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ConfirmDialog } from 'primeng/confirmdialog';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataFetchingService } from 'src/app/data-fetching.service';

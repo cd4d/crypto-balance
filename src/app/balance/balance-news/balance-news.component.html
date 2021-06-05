@@ -1,4 +1,6 @@
-
-<div class="container">
-    
-</div>
+<p-card #card *ngFor="let element of newsData">
+  <p>
+    <a href="{{ element.url }}">{{ element.title }}</a>
+  </p>
+  <p>{{element.description}}</p>
+</p-card>

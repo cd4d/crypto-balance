@@ -1,12 +1,11 @@
-import { Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component,  OnDestroy, OnInit } from '@angular/core';
 import { DataFetchingService } from 'src/app/data-fetching.service';
 import { BalanceService } from '../balance.service';
 
 import { Coin } from '../coin.model';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AddCoinComponent } from './add-coin/add-coin.component';
-import { Observable, Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import {  Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-balance-list',
@@ -46,6 +45,9 @@ export class BalanceListComponent implements OnInit, OnDestroy {
         this.balanceService.calculateBalance()
       }
     )
+    // get news from list
+    console.log(receivedBalance.map(coin => coin.name));
+    
 
   }
 

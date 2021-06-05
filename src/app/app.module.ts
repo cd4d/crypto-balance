@@ -19,6 +19,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { AddCoinComponent } from './balance/balance-list/add-coin/add-coin.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { BalanceNewsComponent } from './balance/balance-news/balance-news.component';
+import {CardModule} from 'primeng/card';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { BalanceNewsComponent } from './balance/balance-news/balance-news.compon
     TableModule,
     ConfirmDialogModule,
     DynamicDialogModule,
-    InputTextModule
+    InputTextModule,
+    CardModule
   ],
 
   providers: [ConfirmationService, DialogService],

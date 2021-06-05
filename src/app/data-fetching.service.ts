@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Coin } from './balance/coin.model';
 import { environment } from '../environments/environment';
 
@@ -115,6 +115,9 @@ export class DataFetchingService {
     });
   }
 }
+
+
+
 
 // Response sample for BTC:
 

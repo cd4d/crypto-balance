@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { pipe } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { DataFetchingService } from '../data-fetching.service';
-import { BalanceService } from './balance.service';
 
 @Component({
   selector: 'app-balance',
@@ -12,11 +9,10 @@ import { BalanceService } from './balance.service';
 export class BalanceComponent implements OnInit {
   constructor(
     private dataFetchingService: DataFetchingService,
-    private balanceService: BalanceService
   ) {}
 
   ngOnInit(): void {
-    // get rates from list
+    
   }
   onFetchOneCrypto() {
     this.dataFetchingService
