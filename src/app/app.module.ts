@@ -20,6 +20,8 @@ import { AddCoinComponent } from './balance/balance-list/add-coin/add-coin.compo
 import { InputTextModule } from 'primeng/inputtext';
 import { BalanceNewsComponent } from './balance/balance-news/balance-news.component';
 import {CardModule} from 'primeng/card';
+import { TruncatePipe } from './shared/truncate.pipe';
+import {PaginatorModule} from 'primeng/paginator';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,7 @@ import {CardModule} from 'primeng/card';
     BalanceChartsComponent,
     AddCoinComponent,
     BalanceNewsComponent,
+    TruncatePipe
   ],
   imports: [
     BrowserModule,
@@ -43,7 +46,8 @@ import {CardModule} from 'primeng/card';
     ConfirmDialogModule,
     DynamicDialogModule,
     InputTextModule,
-    CardModule
+    CardModule,
+    PaginatorModule
   ],
 
   providers: [ConfirmationService, DialogService],

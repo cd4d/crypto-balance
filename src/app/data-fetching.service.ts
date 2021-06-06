@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Coin } from './balance/coin.model';
 import { environment } from '../environments/environment';
+import { newsElement } from './balance/balance-news/news.model';
 
 @Injectable({
   providedIn: 'root',
@@ -106,7 +107,7 @@ export class DataFetchingService {
       .set('pageNumber', '1')
       .set('pageSize', '10')
       .set('autoCorrect', 'true');
-    return this.http.get(newsDataURL, {
+    return this.http.get<{ value: newsElement[] }>(newsDataURL, {
       headers: new HttpHeaders({
         'x-rapidapi-key': environment.rapidAPIKey,
         'x-rapidapi-host': 'contextualwebsearch-websearch-v1.p.rapidapi.com',

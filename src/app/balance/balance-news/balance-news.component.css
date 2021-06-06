@@ -1,0 +1,13 @@
+.news-description {
+    font-size: smaller;
+}
+
+.news-image {
+    max-width: 100%;
+}
+a{
+    text-decoration:none;
+}
+
+/* a:hover {
+} */

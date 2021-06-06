@@ -1,6 +1,16 @@
-<p-card #card *ngFor="let element of newsData">
-  <p>
-    <a href="{{ element.url }}">{{ element.title }}</a>
-  </p>
-  <p>{{element.description}}</p>
-</p-card>
+<div class="row">
+  <div class="col-md-9">
+    <h3>News</h3>
+  </div>
+  <div class="col-md-1">
+    <p-button icon="pi pi-refresh" styleClass="p-button-sm" (onClick)="refreshNews()"></p-button>
+  </div>
+</div>
+
+
+<div class="list-group" #card *ngFor="let element of newsData.slice(indexFirstNews,indexLastNews) ">
+  <a href="{{ element.url }}">{{ element.title }}</a>
+  <p class="news-description">{{element.description | truncate:144:true}}</p>
+
+</div>
+<p-paginator [rows]="3" [totalRecords]="newsData.length" (onPageChange)="paginate($event)"></p-paginator>

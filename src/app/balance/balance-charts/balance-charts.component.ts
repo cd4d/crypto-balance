@@ -18,7 +18,7 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
   showLegend: boolean = true;
   showLabels: boolean = true;
   isDoughnut: boolean = false;
-  view: [number, number] = [700, 400];
+  view: [number, number] = [700, 300];
   valueFormatting(value: number) {
     return '$' + value.toLocaleString();
   }
