@@ -1,11 +1,11 @@
-import { Component,  OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DataFetchingService } from 'src/app/data-fetching.service';
 import { BalanceService } from '../balance.service';
 
 import { Coin } from '../coin.model';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AddCoinComponent } from './add-coin/add-coin.component';
-import {  Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-balance-list',
@@ -19,6 +19,8 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     public dialogService: DialogService
   ) { }
   balance: Coin[] = [];
+  // max nr of coins
+  maxNumberOfCoins = 10
   addCoinFormVisible = false;
   balanceChangedSub = new Subscription();
   // coin name to be added
@@ -33,7 +35,11 @@ export class BalanceListComponent implements OnInit, OnDestroy {
   sliderStep: number | undefined;
   // for modal dialog
   ref: DynamicDialogRef | undefined;
-
+  // pagination
+  indexFirstCoin = 0
+  indexLastCoin = 5
+  // number of coins per page
+  pageSize = 5
 
   ngOnInit(): void {
     const receivedBalance = this.balanceService.getBalance();
@@ -43,39 +49,41 @@ export class BalanceListComponent implements OnInit, OnDestroy {
       newBalance => {
         this.balance = this.balanceService.addSteps(newBalance)
         this.balanceService.calculateBalance()
+        console.log(this.balance)
       }
     )
-    // get news from list
-    console.log(receivedBalance.map(coin => coin.name));
-    
-
+    // TODO get news from list
   }
-
+  // TODO remove coin from balance
 
 
   toggleAddCoinVisibility = (): void => {
     this.addCoinFormVisible = !this.addCoinFormVisible;
   };
 
-  onAddCoin() {
-    this.dataFetchingService.fetchCoinsList();
-    this.coinList = this.dataFetchingService.coinList.slice(0, 10);
-    this.ref = this.dialogService.open(AddCoinComponent, {
-      data: {
-        test: 'something',
-      },
-      header: 'Add a coin',
-      width: '70%',
-      contentStyle: { 'max-height': '500px', overflow: 'auto' },
-      baseZIndex: 10000,
-    });
-  }
+
   onChangeAmount(ticker: string, value: number | null) {
     if (typeof value === 'number') {
       // if(value) returns 'false' for 0
       this.balanceService.changeAmount(ticker, value);
     }
   }
+
+  paginate(event: { first: number; rows: number; }) {
+    //event.first = Index of the first record
+    //event.rows = Number of rows to display in new page
+    //event.page = Index of the new page
+    //event.pageCount = Total number of pages
+    this.indexFirstCoin = event.first
+    this.indexLastCoin = event.first + event.rows
+    console.log(event);
+
+    console.log(this.indexFirstCoin);
+    console.log(this.indexLastCoin);
+
+
+  }
+
   ngOnDestroy() {
     if (this.ref) {
       this.ref.close();

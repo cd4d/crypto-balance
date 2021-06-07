@@ -1,7 +1,7 @@
 <h2>Crypto Balance title</h2>
 
-
-<button
+<div *ngIf="balance.length < maxNumberOfCoins"
+><button
   class="btn btn-primary"
   type="button"
   (click)="toggleAddCoinVisibility()"
@@ -12,9 +12,10 @@
 <app-add-coin
   *ngIf="addCoinFormVisible"
   [onToggleAddCoinVisibility]="toggleAddCoinVisibility"
-></app-add-coin>
+></app-add-coin></div>
+<p *ngIf="balance.length >= maxNumberOfCoins" class="font-italic">Maximum number of coins in balance reached ({{maxNumberOfCoins}}).</p>
 
-<p-table [value]="balance">
+<p-table [value]="balance.slice(indexFirstCoin,indexLastCoin)">
   <ng-template pTemplate="header">
     <tr>
       <th>Name</th>
@@ -52,7 +53,7 @@
     </tr>
   </ng-template>
 </p-table>
-
+<p-paginator *ngIf="balance.length > pageSize" [rows]="pageSize" [totalRecords]="balance.length" (onPageChange)="paginate($event)"></p-paginator>
 <!-- <p-table [value]="balance" [columns]="columnsToDisplay">
   <ng-template pTemplate="header" let-columns>
     <tr>

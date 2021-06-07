@@ -9,7 +9,7 @@ import { Coin } from '../coin.model';
   styleUrls: ['./balance-charts.component.css'],
 })
 export class BalanceChartsComponent implements OnInit, OnDestroy {
-  constructor(private balanceService: BalanceService) {}
+  constructor(private balanceService: BalanceService) { }
   balance: Coin[] = [];
   balanceChangedSub = new Subscription();
   // ngx charts options
@@ -18,7 +18,9 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
   showLegend: boolean = true;
   showLabels: boolean = true;
   isDoughnut: boolean = false;
-  view: [number, number] = [700, 300];
+  // Using dynamic size instead: https://github.com/swimlane/ngx-charts/issues/1096
+  // view: [number, number] = [700, 300];
+
   valueFormatting(value: number) {
     return '$' + value.toLocaleString();
   }
@@ -28,6 +30,7 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
+
     this.balance = this.balanceService.getBalance();
     // Subscribe to update crypto data
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
@@ -52,6 +55,7 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
     newCrypto.value = crypto.valueUSD ? crypto.valueUSD : 0;
     return newCrypto;
   }
+
   ngOnDestroy() {
     this.balanceChangedSub.unsubscribe();
   }

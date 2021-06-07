@@ -1,8 +1,7 @@
 <h2>Portfolio</h2>
-
-<ngx-charts-advanced-pie-chart
+<div #ContainerRef class="card-body"><ngx-charts-advanced-pie-chart
   [valueFormatting]="valueFormatting"
-  [view]="view"
+  [view]="[ContainerRef.offsetWidth, 300]"
   [scheme]="colorScheme"
   [results]="data"
   [gradient]="gradient"
@@ -14,3 +13,5 @@
     {{ tooltip.value | currency: "USD":"symbol":"1.0-2" }}
   </ng-template>
 </ngx-charts-advanced-pie-chart>
+</div>
+

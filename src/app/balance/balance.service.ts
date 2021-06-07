@@ -10,8 +10,9 @@ export class BalanceService {
   public total: number = 0;
   balanceChanged = new Subject<Coin[]>();
   newCoin!: Coin;
+  maxNumberOfCoins = 10
   private currentRate!: any;
-  constructor(private dataFetchingService: DataFetchingService) {}
+  constructor(private dataFetchingService: DataFetchingService) { }
   private cryptoBalance: Coin[] = [
     {
       name: 'Bitcoin',
@@ -77,6 +78,9 @@ export class BalanceService {
     return currentBalance;
   }
   addCoin(coin: Coin) {
+    if (this.cryptoBalance.length >= this.maxNumberOfCoins) {
+      return
+    }
     this.newCoin = coin;
     if (!coin.rateUSD) {
       this.dataFetchingService

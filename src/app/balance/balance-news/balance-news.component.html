@@ -13,4 +13,4 @@
   <p class="news-description">{{element.description | truncate:144:true}}</p>
 
 </div>
-<p-paginator [rows]="3" [totalRecords]="newsData.length" (onPageChange)="paginate($event)"></p-paginator>
+<p-paginator *ngIf="newsData.length > newsPerPage" [rows]="newsPerPage" [totalRecords]="newsData.length" (onPageChange)="paginate($event)"></p-paginator>

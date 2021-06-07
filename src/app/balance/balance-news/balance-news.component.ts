@@ -19,7 +19,7 @@ export class BalanceNewsComponent implements
   newsData: newsElement[] = []
   balanceChangedSub = new Subscription();
   indexFirstNews: number = 0
-  newsPerPage: number = 0
+  newsPerPage: number = 3
   indexLastNews: number = 3
 
   constructor(
@@ -51,7 +51,7 @@ export class BalanceNewsComponent implements
     //     .subscribe((data) => (this.newsData = data));
     //   console.log(this.newsData);
   }
-  refreshNews() {    
+  refreshNews() {
     this.dataFetchingService.fetchNews(this.coinsList).subscribe(data => {
       if (data.value) {
         this.newsData = data.value;
