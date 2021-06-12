@@ -17,10 +17,10 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     private balanceService: BalanceService,
     private dataFetchingService: DataFetchingService,
     public dialogService: DialogService
-  ) { }
+  ) {}
   balance: Coin[] = [];
   // max nr of coins
-  maxNumberOfCoins = 10
+  maxNumberOfCoins = 10;
   addCoinFormVisible = false;
   balanceChangedSub = new Subscription();
   // coin name to be added
@@ -36,31 +36,29 @@ export class BalanceListComponent implements OnInit, OnDestroy {
   // for modal dialog
   ref: DynamicDialogRef | undefined;
   // pagination
-  indexFirstCoin = 0
-  indexLastCoin = 5
+  indexFirstCoin = 0;
+  indexLastCoin = 5;
   // number of coins per page
-  pageSize = 5
+  pageSize = 5;
 
   ngOnInit(): void {
     const receivedBalance = this.balanceService.getBalance();
     this.balance = this.balanceService.addSteps(receivedBalance);
     this.balanceService.calculateBalance();
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
-      newBalance => {
-        this.balance = this.balanceService.addSteps(newBalance)
-        this.balanceService.calculateBalance()
-        console.log(this.balance)
+      (newBalance) => {
+        this.balance = this.balanceService.addSteps(newBalance);
+        this.balanceService.calculateBalance();
+        console.log(this.balance);
       }
-    )
+    );
     // TODO get news from list
   }
   // TODO remove coin from balance
 
-
   toggleAddCoinVisibility = (): void => {
     this.addCoinFormVisible = !this.addCoinFormVisible;
   };
-
 
   onChangeAmount(ticker: string, value: number | null) {
     if (typeof value === 'number') {
@@ -68,20 +66,20 @@ export class BalanceListComponent implements OnInit, OnDestroy {
       this.balanceService.changeAmount(ticker, value);
     }
   }
-
-  paginate(event: { first: number; rows: number; }) {
+  onDeleteCoin(coin: Coin) {
+    this.balanceService.deleteCoin(coin);
+  }
+  paginate(event: { first: number; rows: number }) {
     //event.first = Index of the first record
     //event.rows = Number of rows to display in new page
     //event.page = Index of the new page
     //event.pageCount = Total number of pages
-    this.indexFirstCoin = event.first
-    this.indexLastCoin = event.first + event.rows
+    this.indexFirstCoin = event.first;
+    this.indexLastCoin = event.first + event.rows;
     console.log(event);
 
     console.log(this.indexFirstCoin);
     console.log(this.indexLastCoin);
-
-
   }
 
   ngOnDestroy() {

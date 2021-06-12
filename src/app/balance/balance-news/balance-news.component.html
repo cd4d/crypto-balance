@@ -1,16 +1,39 @@
 <div class="row">
-  <div class="col-md-9">
+  <div class="col-md-5">
     <h3>News</h3>
   </div>
-  <div class="col-md-1">
-    <p-button icon="pi pi-refresh" styleClass="p-button-sm" (onClick)="refreshNews()"></p-button>
+
+  <div class="col-md-2">
+    <p-button
+      icon="pi pi-refresh"
+      styleClass="p-button-sm"
+      (onClick)="refreshNews()"
+    ></p-button>
   </div>
 </div>
-
-
-<div class="list-group" #card *ngFor="let element of newsData.slice(indexFirstNews,indexLastNews) ">
-  <a href="{{ element.url }}">{{ element.title }}</a>
-  <p class="news-description">{{element.description | truncate:144:true}}</p>
-
+<div *ngIf="isLoading">
+  <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
 </div>
-<p-paginator *ngIf="newsData.length > newsPerPage" [rows]="newsPerPage" [totalRecords]="newsData.length" (onPageChange)="paginate($event)"></p-paginator>
+<div class="alert alert-danger mt-3" *ngIf="error">
+  <p>{{ error }}</p>
+  <button class="btn btn-danger" (click)="onCloseError()">Close</button>
+</div>
+
+<div *ngIf="!isLoading && !error">
+  <div
+    class="list-group"
+    #card
+    *ngFor="let element of newsData.slice(indexFirstNews, indexLastNews)"
+  >
+    <a href="{{ element.url }}">{{ element.title }}</a>
+    <p class="news-description">
+      {{ element.description | truncate: 144:true }}
+    </p>
+  </div>
+  <p-paginator
+    *ngIf="newsData.length > newsPerPage"
+    [rows]="newsPerPage"
+    [totalRecords]="newsData.length"
+    (onPageChange)="paginate($event)"
+  ></p-paginator>
+</div>

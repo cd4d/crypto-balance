@@ -1,21 +1,24 @@
 <h2>Crypto Balance title</h2>
 
-<div *ngIf="balance.length < maxNumberOfCoins"
-><button
-  class="btn btn-primary"
-  type="button"
-  (click)="toggleAddCoinVisibility()"
-  *ngIf="!addCoinFormVisible"
->
-  Add coin
-</button>
-<app-add-coin
-  *ngIf="addCoinFormVisible"
-  [onToggleAddCoinVisibility]="toggleAddCoinVisibility"
-></app-add-coin></div>
-<p *ngIf="balance.length >= maxNumberOfCoins" class="font-italic">Maximum number of coins in balance reached ({{maxNumberOfCoins}}).</p>
+<div *ngIf="balance.length < maxNumberOfCoins">
+  <button
+    class="btn btn-primary"
+    type="button"
+    (click)="toggleAddCoinVisibility()"
+    *ngIf="!addCoinFormVisible"
+  >
+    Add coin
+  </button>
+  <app-add-coin
+    *ngIf="addCoinFormVisible"
+    [onToggleAddCoinVisibility]="toggleAddCoinVisibility"
+  ></app-add-coin>
+</div>
+<p *ngIf="balance.length >= maxNumberOfCoins" class="font-italic">
+  Maximum number of coins in balance reached ({{ maxNumberOfCoins }}).
+</p>
 
-<p-table [value]="balance.slice(indexFirstCoin,indexLastCoin)">
+<p-table [value]="balance.slice(indexFirstCoin, indexLastCoin)">
   <ng-template pTemplate="header">
     <tr>
       <th>Name</th>
@@ -23,6 +26,7 @@
       <th>Rate (USD)</th>
       <th>Amount</th>
       <th>Value</th>
+      <th>Delete</th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-coin>
@@ -50,10 +54,25 @@
         </p-cellEditor>
       </td>
       <td>{{ coin.valueUSD | currency: "USD":"symbol":"1.0-2" }}</td>
+      <td style="text-align: center">
+        <button
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-times"
+          (click)="onDeleteCoin(coin)"
+          class="p-button-rounded p-button-text p-button-danger"
+        ></button>
+      </td>
     </tr>
   </ng-template>
 </p-table>
-<p-paginator *ngIf="balance.length > pageSize" [rows]="pageSize" [totalRecords]="balance.length" (onPageChange)="paginate($event)"></p-paginator>
+<p-paginator
+  *ngIf="balance.length > pageSize"
+  [rows]="pageSize"
+  [totalRecords]="balance.length"
+  (onPageChange)="paginate($event)"
+></p-paginator>
 <!-- <p-table [value]="balance" [columns]="columnsToDisplay">
   <ng-template pTemplate="header" let-columns>
     <tr>

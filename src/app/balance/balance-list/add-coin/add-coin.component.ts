@@ -15,6 +15,7 @@ export class AddCoinComponent implements OnInit, OnDestroy {
   private searchTerms = new Subject<string>();
   selectedCoin: Coin = { name: '', symbol: '', id: '', rateUSD: 0 };
   coins$!: Observable<Coin[]>;
+  error:string = ''
   constructor(
     private balanceService: BalanceService,
     private dataFetchingService: DataFetchingService // public ref: DynamicDialogRef, public config: DynamicDialogConfig
@@ -48,6 +49,11 @@ export class AddCoinComponent implements OnInit, OnDestroy {
           // https://fettblog.eu/typescript-better-object-keys/
           this.selectedCoin.rateUSD = res[key as keyof object]['usd'];
         });
+      },error =>{
+        if(error.statusText){this.error = error.statusText}
+        else {
+          this.error = 'Error getting rate.'
+        }        
       });
 
     // empty the resulting array by passing empty value

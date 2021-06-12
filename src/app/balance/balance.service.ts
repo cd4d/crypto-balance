@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DataFetchingService } from '../data-fetching.service';
@@ -10,9 +11,12 @@ export class BalanceService {
   public total: number = 0;
   balanceChanged = new Subject<Coin[]>();
   newCoin!: Coin;
-  maxNumberOfCoins = 10
+  maxNumberOfCoins = 10;
   private currentRate!: any;
-  constructor(private dataFetchingService: DataFetchingService) { }
+  constructor(
+    private dataFetchingService: DataFetchingService,
+    private http: HttpClient
+  ) {}
   private cryptoBalance: Coin[] = [
     {
       name: 'Bitcoin',
@@ -44,6 +48,18 @@ export class BalanceService {
   getBalance() {
     return [...this.cryptoBalance];
   }
+
+  saveRemoteBalance(balance: Coin[]) {
+    this.http
+      .post(
+        'https://crypto-balance-d7b89-default-rtdb.firebaseio.com/balances.json',
+        balance
+      )
+      .subscribe((responseData) => {
+        console.log(responseData);
+      });
+  }
+
   changeAmount(symbol: string, value: number) {
     // console.log('changing amount ' + value);
     this.cryptoBalance = this.cryptoBalance.map((crypto) => {
@@ -79,7 +95,7 @@ export class BalanceService {
   }
   addCoin(coin: Coin) {
     if (this.cryptoBalance.length >= this.maxNumberOfCoins) {
-      return
+      return;
     }
     this.newCoin = coin;
     if (!coin.rateUSD) {
@@ -90,6 +106,14 @@ export class BalanceService {
         });
     }
     this.cryptoBalance.push(this.newCoin);
+    this.calculateBalance();
+    this.balanceChanged.next(this.cryptoBalance);
+  }
+
+  deleteCoin(coin: Coin) {
+    this.cryptoBalance = this.cryptoBalance.filter(
+      (element) => element.name !== coin.name
+    );
     this.calculateBalance();
     this.balanceChanged.next(this.cryptoBalance);
   }

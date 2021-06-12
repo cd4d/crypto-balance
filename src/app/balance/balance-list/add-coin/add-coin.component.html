@@ -1,11 +1,16 @@
 <div class="row mt-2 mb-2">
   <h6>
     Add coin: {{ selectedCoin.name }}
-    {{ selectedCoin.name && selectedCoin.rateUSD && selectedCoin.rateUSD * +coinAmount.value | currency }}
+    {{
+      selectedCoin.name &&
+        selectedCoin.rateUSD &&
+        selectedCoin.rateUSD * +coinAmount.value | currency
+    }}
+    <span *ngIf="error" class="text-danger">Error fetching rate.</span>
   </h6>
 
-  <div class="col-md-5">
-    <div class="col-md-12">
+  <div class="col">
+    <div>
       <input
         pInputText
         #searchBox
@@ -26,8 +31,8 @@
       </ul>
     </div>
   </div>
-  <div class="col-md-4">
-    <div class="col-md-12">
+  <div class="col">
+    <div>
       <input
         pInputText
         #coinAmount
@@ -40,8 +45,11 @@
     </div>
   </div>
 
-  <div class="col-md-2 offset-md-2 pt-2">
-    <a style="cursor: pointer" (click)="onAddCoin()"
+  <div class="col pt-2">
+    <a
+      style="cursor: pointer"
+      (click)="onAddCoin()"
+      *ngIf="selectedCoin.name && selectedCoin.amount"
       ><span class="pi pi-check"></span
     ></a>
     <a style="cursor: pointer" (click)="onToggleAddCoinVisibility()"

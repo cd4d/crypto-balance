@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataFetchingService } from '../data-fetching.service';
+import { BalanceService } from './balance.service';
 
 @Component({
   selector: 'app-balance',
@@ -9,11 +10,10 @@ import { DataFetchingService } from '../data-fetching.service';
 export class BalanceComponent implements OnInit {
   constructor(
     private dataFetchingService: DataFetchingService,
+    private balanceService: BalanceService
   ) {}
 
-  ngOnInit(): void {
-    
-  }
+  ngOnInit(): void {}
   onFetchOneCrypto() {
     this.dataFetchingService
       .fetchOneCryptoCurrency('bitcoin')
@@ -23,10 +23,13 @@ export class BalanceComponent implements OnInit {
     this.dataFetchingService.searchCoinList('Bitcoin');
   }
   testButton() {
-    let formattedRates: { [key: string]: number } = {};
-    this.dataFetchingService
-      .fetchNews(['bitcoin'])
-      .subscribe((res) => console.log(res));
+    let tempBalance = this.balanceService.getBalance();
+    this.balanceService.saveRemoteBalance(tempBalance);
+
+    //   this.dataFetchingService
+    //     .fetchNews(['bitcoin'])
+    //     .subscribe((res) => console.log(res));
+    //
+    // this.balanceService.addCoin({ name: 'Cardano', symbol: 'ADA' })
   }
-  // this.balanceService.addCoin({ name: 'Cardano', symbol: 'ADA' })
 }

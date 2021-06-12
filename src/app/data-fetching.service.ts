@@ -58,7 +58,7 @@ export class DataFetchingService {
 
   fetchCoinsList() {
     if (!localStorage.getItem('coinsList')) {
-      console.log('fetching remotely coin list');
+      console.log('fetching server coin list');
       this.getCoinList().subscribe((coins) => {
         this.coinList = coins;
         localStorage.setItem('coinsList', JSON.stringify(coins));
@@ -116,9 +116,6 @@ export class DataFetchingService {
     });
   }
 }
-
-
-
 
 // Response sample for BTC:
 
