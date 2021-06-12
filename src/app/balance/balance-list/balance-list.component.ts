@@ -26,7 +26,6 @@ export class BalanceListComponent implements OnInit, OnDestroy {
   // coin name to be added
   coinName: string = '';
   // first 10 coins
-  coinList: Coin[] = [];
   columnsToDisplay: any[] = [];
 
   // steps for input
@@ -44,6 +43,7 @@ export class BalanceListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const receivedBalance = this.balanceService.getBalance();
     this.balance = this.balanceService.addSteps(receivedBalance);
+    //this.balanceService.addRates()
     this.balanceService.calculateBalance();
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
       (newBalance) => {
