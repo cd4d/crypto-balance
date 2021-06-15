@@ -2,3 +2,6 @@
   font-family: "Helvetica Neue", sans-serif;
 }
 
+.amount-input {
+  width: 5rem;
+}

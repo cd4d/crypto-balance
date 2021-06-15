@@ -22,7 +22,7 @@
   <ng-template pTemplate="header">
     <tr>
       <th>Name</th>
-      <th>Ticker</th>
+      <th>Symbol</th>
       <th>Rate (USD)</th>
       <th>Amount</th>
       <th>Value</th>
@@ -32,7 +32,7 @@
   <ng-template pTemplate="body" let-coin>
     <tr>
       <td>{{ coin.name }}</td>
-      <td>{{ coin.ticker }}</td>
+      <td>{{ coin.symbol }}</td>
       <td>{{ coin.rateUSD | currency: "USD":"symbol":"1.0-2" }}</td>
       <td pEditableColumn>
         <p-cellEditor>
@@ -46,6 +46,7 @@
               step="{{ coin.editStep }}"
               (change)="onChangeAmount(coin.ticker, +inputAmount.value)"
               (blur)="onChangeAmount(coin.ticker, +inputAmount.value)"
+              class="amount-input"
             />
           </ng-template>
           <ng-template pTemplate="output">

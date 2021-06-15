@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Output } from '@angular/core';
 import { DataFetchingService } from 'src/app/data-fetching.service';
 import { BalanceService } from '../balance.service';
 
@@ -54,7 +54,6 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     );
     // TODO get news from list
   }
-  // TODO remove coin from balance
 
   toggleAddCoinVisibility = (): void => {
     this.addCoinFormVisible = !this.addCoinFormVisible;
