@@ -1,17 +1,13 @@
 <h2>Portfolio</h2>
-<div #ContainerRef class="card-body"><ngx-charts-advanced-pie-chart
-  [valueFormatting]="valueFormatting"
-  [view]="[ContainerRef.offsetWidth, 300]"
-  [scheme]="colorScheme"
-  [results]="data"
-  [gradient]="gradient"
-  [animations]="true"
->
-  <ng-template #tooltipTemplate let-tooltip="model">
-    {{ tooltip.name }}
-    <br />
-    {{ tooltip.value | currency: "USD":"symbol":"1.0-2" }}
-  </ng-template>
-</ngx-charts-advanced-pie-chart>
+<div #ContainerRef class="card-body">
+  <ngx-charts-advanced-pie-chart [valueFormatting]="valueFormatting" [view]="[ContainerRef.offsetWidth, 300]"
+    [scheme]="colorScheme" [results]="data" [gradient]="gradient" [animations]="true">
+    <ng-template #tooltipTemplate let-tooltip="model">
+      {{ tooltip.name }}
+      <br />
+      {{ tooltip.value | currency: "USD":"symbol":"1.0-2" }}
+    </ng-template>
+  </ngx-charts-advanced-pie-chart> -
 </div>
-
+<!-- Prime NG -->
+<!-- <p-chart type="pie" [data]="data"></p-chart> -->

@@ -39,6 +39,8 @@ export class BalanceListComponent implements OnInit, OnDestroy {
   indexLastCoin = 5;
   // number of coins per page
   pageSize = 5;
+  // outputting data to chart
+  
 
   ngOnInit(): void {
     const receivedBalance = this.balanceService.getBalance();
@@ -49,7 +51,6 @@ export class BalanceListComponent implements OnInit, OnDestroy {
       (newBalance) => {
         this.balance = this.balanceService.addSteps(newBalance);
         this.balanceService.calculateBalance();
-        console.log(this.balance);
       }
     );
     // TODO get news from list

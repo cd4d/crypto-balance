@@ -19,9 +19,10 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AddCoinComponent } from './balance/balance-list/add-coin/add-coin.component';
 import { InputTextModule } from 'primeng/inputtext';
-import {CardModule} from 'primeng/card';
+import { CardModule } from 'primeng/card';
 import { TruncatePipe } from './shared/truncate.pipe';
-import {PaginatorModule} from 'primeng/paginator';
+import { PaginatorModule } from 'primeng/paginator';
+import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   declarations: [
@@ -47,10 +48,11 @@ import {PaginatorModule} from 'primeng/paginator';
     DynamicDialogModule,
     InputTextModule,
     CardModule,
-    PaginatorModule
+    PaginatorModule,
+    ChartModule
   ],
 
   providers: [ConfirmationService, DialogService],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

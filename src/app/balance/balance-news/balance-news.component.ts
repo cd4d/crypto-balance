@@ -30,7 +30,7 @@ export class BalanceNewsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.balance = this.balanceService.getBalance();
     this.coinsList = this.balance.map((crypto) => crypto.name);
-    console.log('coinslist init: ', this.coinsList);
+   //console.log('coinslist init: ', this.coinsList);
 
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
       (receivedBalance) => {
