@@ -1,5 +1,6 @@
 import { AfterContentChecked, AfterContentInit, AfterViewChecked, AfterViewInit, Component, DoCheck, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { DataFetchingService } from 'src/app/data-fetching.service';
 import { BalanceService } from '../balance.service';
 import { Coin } from '../coin.model';
 
@@ -9,10 +10,11 @@ import { Coin } from '../coin.model';
   styleUrls: ['./balance-charts.component.css'],
 })
 export class BalanceChartsComponent implements OnInit, OnDestroy {
-  constructor(private balanceService: BalanceService) { }
+  constructor(private balanceService: BalanceService,
+    private dataFetchingService: DataFetchingService) { }
   balance: Coin[] = [];
   balanceChangedSub = new Subscription();
-
+  total: number = 0
   // primeNG chart
   // data: {labels:string[],datasets:[{data:number[]}]} = {labels:[],datasets:[{data:[]}]};
   // ngx charts options
@@ -34,10 +36,42 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     //this.balanceService.updateBalance()
-    this.balance = this.balanceService.calculateBalance()
-    //this.data = [];
-    this.updateChartData(this.balance);
-    console.log(this.balance);
+    // this.balance = this.balanceService.getBalance()
+    //let currentBalance = this.balanceService.calculateBalance()
+    console.log( this.balanceService.calculateBalance());
+    //if ( currentBalance instanceof Array) { this.updateChartData(currentBalance); }
+
+
+    // let coinsList = currentBalance.map((coin) => coin.name);
+    // this.dataFetchingService.getRates(coinsList, 'usd').subscribe((res) =>
+    //   currentBalance.map((crypto) => {
+    //     Object.keys(res).forEach((key) => {
+    //       if (key === crypto.name.toLowerCase()) {
+    //         crypto.rateUSD = res[key as keyof object]['usd'];
+    //       }
+    //     });
+    //     // calculate value of each hodling and calculate total
+    //     if (crypto.rateUSD && crypto.amount) {
+    //       crypto.valueUSD = crypto.rateUSD * crypto.amount;
+    //     }
+    //     if (crypto.valueUSD) {
+    //       this.total += crypto.valueUSD;
+    //     }
+    //     // get the weight of each
+    //     if (this.total && this.total > 0) {
+    //       if (crypto.valueUSD) {
+    //         crypto.weight = crypto.valueUSD / this.total;
+    //       }
+    //     }
+    //   }
+
+    //   ),error => {console.log('error')},
+    //   () => {
+    //     this.updateChartData(currentBalance)
+    //   this.data = [...this.data]
+    //   }
+
+    // );
 
     // Subscribe to update crypto data
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(

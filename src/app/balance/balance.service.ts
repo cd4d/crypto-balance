@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { DataFetchingService } from '../data-fetching.service';
 import { Coin } from './coin.model';
 
@@ -17,7 +17,7 @@ export class BalanceService {
   constructor(
     private dataFetchingService: DataFetchingService,
     private http: HttpClient
-  ) {}
+  ) { }
   private cryptoBalance: Coin[] = [
     {
       name: 'Bitcoin',
@@ -49,7 +49,7 @@ export class BalanceService {
   getBalance() {
     return [...this.cryptoBalance];
   }
-  updateBalance(){
+  updateBalance() {
     this.calculateBalance();
     this.balanceChanged.next(this.cryptoBalance);
 
@@ -76,14 +76,20 @@ export class BalanceService {
     });
     this.updateBalance()
   }
-
+// calculateBalance():Observable<Coin[]>{
+//   let coinsList = this.cryptoBalance.map((coin) => coin.name);
+//   return this.dataFetchingService.getRates(coinsList,'usd').subscribe(res =>
+    
+//     )
+// }
   calculateBalance() {
     console.log('adding rates');
 
-    const currentBalance = [...this.cryptoBalance];
-    let coinsList = currentBalance.map((coin) => coin.name);
-    this.dataFetchingService.getRates(coinsList, 'usd').subscribe((res) =>
-      currentBalance.map((crypto) => {
+    //const currentBalance = [...this.cryptoBalance];
+    let currentBalance: any[] = []
+    let coinsList = this.cryptoBalance.map((coin) => coin.name);
+     this.dataFetchingService.getRates(coinsList, 'usd').subscribe((res) =>
+      currentBalance = this.cryptoBalance.map((crypto) => {
         Object.keys(res).forEach((key) => {
           if (key === crypto.name.toLowerCase()) {
             crypto.rateUSD = res[key as keyof object]['usd'];
@@ -102,12 +108,15 @@ export class BalanceService {
             crypto.weight = crypto.valueUSD / this.total;
           }
         }
-      })
-    );
-    console.log(currentBalance);
-
-    return currentBalance;
-  }
+      }),
+      error => { console.log("error fetching rates") },
+      () => {
+        console.log()
+        return currentBalance;
+      }
+    )
+    
+   }
 
   addCoin(coin: Coin) {
     if (this.cryptoBalance.length >= this.maxNumberOfCoins) {
