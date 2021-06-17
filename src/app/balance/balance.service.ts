@@ -77,15 +77,8 @@ export class BalanceService {
     });
     this.updateBalance();
   }
-  // calculateBalance():Observable<Coin[]>{
-  //   let coinsList = this.cryptoBalance.map((coin) => coin.name);
-  //   return this.dataFetchingService.getRates(coinsList,'usd').subscribe(res =>
 
-  //     )
-  // }
   calculateBalance() {
-    console.log('adding rates');
-
     //const currentBalance = [...this.cryptoBalance];
     let coinsList = this.cryptoBalance.map((coin) => coin.name);
     this.dataFetchingService.getRates(coinsList, 'usd').subscribe(
@@ -116,15 +109,8 @@ export class BalanceService {
         ,
       (error) => {
         console.log('error fetching rates');
-      },
-      () =>{
-        
-        console.log(this.chartsData);
-        
       }
     );
-    this.chartsData = this.cryptoBalance
-    //return [...this.cryptoBalance]
   }
 
   addCoin(coin: Coin) {
@@ -133,13 +119,16 @@ export class BalanceService {
     }
     this.newCoin = coin;
     if (!coin.rateUSD) {
+      console.log('getting rates');
       this.dataFetchingService
         .getRates([coin.id ? coin.id : coin.name.toLowerCase()], 'usd')
         .subscribe((rate) => {
           this.newCoin.rateUSD = Object.values(rate)[0]['usd'];
         });
     }
-    this.cryptoBalance.push(this.newCoin);
+    //console.log(this.newCoin);
+    
+    this.cryptoBalance = [...this.cryptoBalance, this.newCoin]
     this.updateBalance();
   }
 

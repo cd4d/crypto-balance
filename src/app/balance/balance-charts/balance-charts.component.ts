@@ -50,7 +50,7 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
   
-    // works
+    // initialize chart data
     const currentBalance = this.balanceService.getBalance()
     let coinsList = currentBalance.map((coin) => coin.name);
     this.dataFetchingService.getRates(coinsList, 'usd').subscribe((res) =>
