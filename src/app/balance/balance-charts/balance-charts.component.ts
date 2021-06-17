@@ -1,5 +1,17 @@
-import { AfterContentChecked, AfterContentInit, AfterViewChecked, AfterViewInit, Component, DoCheck, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import {
+  AfterContentChecked,
+  AfterContentInit,
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  DoCheck,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { DataFetchingService } from 'src/app/data-fetching.service';
 import { BalanceService } from '../balance.service';
 import { Coin } from '../coin.model';
@@ -10,15 +22,17 @@ import { Coin } from '../coin.model';
   styleUrls: ['./balance-charts.component.css'],
 })
 export class BalanceChartsComponent implements OnInit, OnDestroy {
-  constructor(private balanceService: BalanceService,
-    private dataFetchingService: DataFetchingService) { }
+  constructor(
+    private balanceService: BalanceService,
+    private dataFetchingService: DataFetchingService
+  ) {}
   balance: Coin[] = [];
   balanceChangedSub = new Subscription();
-  total: number = 0
+  total: number = 0;
   // primeNG chart
   // data: {labels:string[],datasets:[{data:number[]}]} = {labels:[],datasets:[{data:[]}]};
   // ngx charts options
-  data: any[] = []
+  data: any[] = [];
   gradient: boolean = true;
   showLegend: boolean = true;
   showLabels: boolean = true;
@@ -35,52 +49,58 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
-    //this.balanceService.updateBalance()
-    // this.balance = this.balanceService.getBalance()
-    //let currentBalance = this.balanceService.calculateBalance()
-    console.log( this.balanceService.calculateBalance());
-    //if ( currentBalance instanceof Array) { this.updateChartData(currentBalance); }
+  
+    // works
+    const currentBalance = this.balanceService.getBalance()
+    let coinsList = currentBalance.map((coin) => coin.name);
+    this.dataFetchingService.getRates(coinsList, 'usd').subscribe((res) =>
+      currentBalance.map((crypto) => {
+        Object.keys(res).forEach((key) => {
+          if (key === crypto.name.toLowerCase()) {
+            crypto.rateUSD = res[key as keyof object]['usd'];
+          }
+        });
+        // calculate value of each hodling and calculate total
+        if (crypto.rateUSD && crypto.amount) {
+          crypto.valueUSD = crypto.rateUSD * crypto.amount;
+        }
+        if (crypto.valueUSD) {
+          this.total += crypto.valueUSD;
+        }
+        // get the weight of each
+        if (this.total && this.total > 0) {
+          if (crypto.valueUSD) {
+            crypto.weight = crypto.valueUSD / this.total;
+          }
+        }
+      }
 
+      ),error => {console.log('error')},
+      () => {
+        
+      this.data = this.updateChartData(currentBalance)
+      }
 
-    // let coinsList = currentBalance.map((coin) => coin.name);
-    // this.dataFetchingService.getRates(coinsList, 'usd').subscribe((res) =>
-    //   currentBalance.map((crypto) => {
-    //     Object.keys(res).forEach((key) => {
-    //       if (key === crypto.name.toLowerCase()) {
-    //         crypto.rateUSD = res[key as keyof object]['usd'];
-    //       }
-    //     });
-    //     // calculate value of each hodling and calculate total
-    //     if (crypto.rateUSD && crypto.amount) {
-    //       crypto.valueUSD = crypto.rateUSD * crypto.amount;
-    //     }
-    //     if (crypto.valueUSD) {
-    //       this.total += crypto.valueUSD;
-    //     }
-    //     // get the weight of each
-    //     if (this.total && this.total > 0) {
-    //       if (crypto.valueUSD) {
-    //         crypto.weight = crypto.valueUSD / this.total;
-    //       }
-    //     }
-    //   }
-
-    //   ),error => {console.log('error')},
-    //   () => {
-    //     this.updateChartData(currentBalance)
-    //   this.data = [...this.data]
-    //   }
-
-    // );
+    );
 
     // Subscribe to update crypto data
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
       (receivedBalance) => {
-        this.data = []
-        //this.data ={labels:[],datasets:[{data:[]}]};
-        this.updateChartData(receivedBalance);
+        this.data = [];
+        this.data = this.updateChartData(receivedBalance);
       }
     );
+  }
+
+  updateChartData(receivedBalance: Coin[]) {
+    // update and format chart data
+    let newData: any[] = [];
+    receivedBalance.map((crypto) => {
+      const newCrypto = this.formatChartData(crypto);
+      newData.push(newCrypto);
+      //this.data.push(newCrypto);
+    });
+    return newData;
   }
   // ngx-charts version
   formatChartData(crypto: Coin) {
@@ -91,17 +111,6 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
 
     return newCrypto;
   }
-  updateChartData(receivedBalance: Coin[]) {
-    // update and format chart data
-
-    receivedBalance.map((crypto) => {
-      const newCrypto = this.formatChartData(crypto);
-      this.data.push(newCrypto);
-
-    });
-  }
-
-
   // primeNG chart version
   // formatChartData(crypto: Coin) {
   //   // format data to ngx-chart

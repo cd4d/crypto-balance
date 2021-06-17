@@ -14,10 +14,12 @@ export class BalanceService {
   maxNumberOfCoins = 10;
   private currentRate!: any;
   calculatedBalance: any[] = [];
+  chartsData:Coin[] = [];
+
   constructor(
     private dataFetchingService: DataFetchingService,
     private http: HttpClient
-  ) { }
+  ) {}
   private cryptoBalance: Coin[] = [
     {
       name: 'Bitcoin',
@@ -52,7 +54,6 @@ export class BalanceService {
   updateBalance() {
     this.calculateBalance();
     this.balanceChanged.next(this.cryptoBalance);
-
   }
 
   saveRemoteBalance(balance: Coin[]) {
@@ -74,49 +75,57 @@ export class BalanceService {
       }
       return crypto;
     });
-    this.updateBalance()
+    this.updateBalance();
   }
-// calculateBalance():Observable<Coin[]>{
-//   let coinsList = this.cryptoBalance.map((coin) => coin.name);
-//   return this.dataFetchingService.getRates(coinsList,'usd').subscribe(res =>
-    
-//     )
-// }
+  // calculateBalance():Observable<Coin[]>{
+  //   let coinsList = this.cryptoBalance.map((coin) => coin.name);
+  //   return this.dataFetchingService.getRates(coinsList,'usd').subscribe(res =>
+
+  //     )
+  // }
   calculateBalance() {
     console.log('adding rates');
 
     //const currentBalance = [...this.cryptoBalance];
-    let currentBalance: any[] = []
     let coinsList = this.cryptoBalance.map((coin) => coin.name);
-     this.dataFetchingService.getRates(coinsList, 'usd').subscribe((res) =>
-      currentBalance = this.cryptoBalance.map((crypto) => {
-        Object.keys(res).forEach((key) => {
-          if (key === crypto.name.toLowerCase()) {
-            crypto.rateUSD = res[key as keyof object]['usd'];
+    this.dataFetchingService.getRates(coinsList, 'usd').subscribe(
+      (res) =>
+        this.cryptoBalance.map((crypto) => {
+          Object.keys(res).forEach((key) => {
+            if (key === crypto.name.toLowerCase()) {
+              crypto.rateUSD = res[key as keyof object]['usd'];
+            }
+          });
+          // calculate value of each hodling and calculate total
+          if (crypto.rateUSD && crypto.amount) {
+            crypto.valueUSD = crypto.rateUSD * crypto.amount;
           }
-        });
-        // calculate value of each hodling and calculate total
-        if (crypto.rateUSD && crypto.amount) {
-          crypto.valueUSD = crypto.rateUSD * crypto.amount;
-        }
-        if (crypto.valueUSD) {
-          this.total += crypto.valueUSD;
-        }
-        // get the weight of each
-        if (this.total && this.total > 0) {
           if (crypto.valueUSD) {
-            crypto.weight = crypto.valueUSD / this.total;
+            this.total += crypto.valueUSD;
           }
-        }
-      }),
-      error => { console.log("error fetching rates") },
-      () => {
-        console.log()
-        return currentBalance;
+          // get the weight of each
+          if (this.total && this.total > 0) {
+            if (crypto.valueUSD) {
+              crypto.weight = crypto.valueUSD / this.total;
+            }
+          }
+          
+
+        })
+        
+        ,
+      (error) => {
+        console.log('error fetching rates');
+      },
+      () =>{
+        
+        console.log(this.chartsData);
+        
       }
-    )
-    
-   }
+    );
+    this.chartsData = this.cryptoBalance
+    //return [...this.cryptoBalance]
+  }
 
   addCoin(coin: Coin) {
     if (this.cryptoBalance.length >= this.maxNumberOfCoins) {
@@ -131,16 +140,14 @@ export class BalanceService {
         });
     }
     this.cryptoBalance.push(this.newCoin);
-    this.updateBalance()
-
+    this.updateBalance();
   }
 
   deleteCoin(coin: Coin) {
     this.cryptoBalance = this.cryptoBalance.filter(
       (element) => element.name !== coin.name
     );
-    this.updateBalance()
-
+    this.updateBalance();
   }
 
   addSteps(coinList: Coin[]): Coin[] {
