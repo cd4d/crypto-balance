@@ -1,34 +1,22 @@
-<h2>Portfolio</h2>
-
-<div *ngIf="balance.length < maxNumberOfCoins" class="my-3">
-  <ul class="list-group list-group-horizontal"
-   
-    
-  >
-    <li  *ngFor="let coin of balance.slice(indexFirstCoin, indexLastCoin)" class="list-group-item"><img class="image-coin" src={{coin.image}}>{{ coin.name }}</li>
-  </ul>
-
-  <button
-    class="btn btn-primary"
-    type="button"
-    (click)="toggleAddCoinVisibility()"
-    *ngIf="!addCoinFormVisible"
-  >
+<h2>Portfolio</h2><button class="btn btn-primary ms-2 btn-sm" type="button" (click)="toggleAddCoinVisibility()" *ngIf="!addCoinFormVisible">
     Add coin
   </button>
-  <app-add-coin
-    *ngIf="addCoinFormVisible"
-    [onToggleAddCoinVisibility]="toggleAddCoinVisibility"
-  ></app-add-coin>
+ <!-- Adding coin input  -->
+  <app-add-coin *ngIf="addCoinFormVisible" [onToggleAddCoinVisibility]="toggleAddCoinVisibility"></app-add-coin>
+<div *ngIf="balance.length < maxNumberOfCoins" class="my-3">
+  <!-- Icons of listed coins -->
+  <ul  *ngIf="!addCoinFormVisible" class="list-group list-group-horizontal ">
+    <li *ngFor="let coin of balance.slice(indexFirstCoin, indexLastCoin)" class="list-group-item  d-none d-sm-block"><img
+        class="image-coin" src={{coin.image}}>{{ coin.name }}</li>
+  </ul>
+
+ 
 </div>
 <p *ngIf="balance.length >= maxNumberOfCoins" class="font-italic">
   Maximum number of coins in balance reached ({{ maxNumberOfCoins }}).
 </p>
 
-<p-table
-  [value]="balance.slice(indexFirstCoin, indexLastCoin)"
-  [autoLayout]="true"
->
+<p-table [value]="balance.slice(indexFirstCoin, indexLastCoin)" [autoLayout]="true">
   <ng-template pTemplate="header">
     <tr>
       <th>Name</th>
@@ -47,17 +35,9 @@
       <td pEditableColumn>
         <p-cellEditor>
           <ng-template pTemplate="input">
-            <input
-              #inputAmount
-              min="0"
-              type="number"
-              [(ngModel)]="coin.amount"
-              name="amount"
-              step="{{ coin.editStep }}"
+            <input #inputAmount min="0" type="number" [(ngModel)]="coin.amount" name="amount" step="{{ coin.editStep }}"
               (blur)="onChangeAmount(coin.ticker, +inputAmount.value)"
-              (input)="onChangeAmount(coin.ticker, +inputAmount.value)"
-              class="amount-input"
-            />
+              (input)="onChangeAmount(coin.ticker, +inputAmount.value)" class="amount-input" />
           </ng-template>
           <ng-template pTemplate="output">
             {{ coin.amount | number: "1.0-3" }}
@@ -66,24 +46,14 @@
       </td>
       <td>{{ coin.valueUSD | currency: "USD":"symbol":"1.0-2" }}</td>
       <td style="text-align: center">
-        <button
-          pButton
-          pRipple
-          type="button"
-          icon="pi pi-times"
-          (click)="onDeleteCoin(coin)"
-          class="p-button-rounded p-button-text p-button-danger"
-        ></button>
+        <button pButton pRipple type="button" icon="pi pi-times" (click)="onDeleteCoin(coin)"
+          class="p-button-rounded p-button-text p-button-danger"></button>
       </td>
     </tr>
   </ng-template>
 </p-table>
-<p-paginator
-  *ngIf="balance.length > pageSize"
-  [rows]="pageSize"
-  [totalRecords]="balance.length"
-  (onPageChange)="paginate($event)"
-></p-paginator>
+<p-paginator *ngIf="balance.length > pageSize" [rows]="pageSize" [totalRecords]="balance.length"
+  (onPageChange)="paginate($event)"></p-paginator>
 <!-- <p-table [value]="balance" [columns]="columnsToDisplay">
   <ng-template pTemplate="header" let-columns>
     <tr>

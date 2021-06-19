@@ -1,3 +1,11 @@
+h2{
+  display:inline-block;
+}
+
+button{
+  vertical-align: super;
+}
+
 .crypto-table {
   font-family: "Helvetica Neue", sans-serif;
 }
@@ -10,4 +18,8 @@
   max-width: 18px;
   vertical-align: text-bottom;
   margin-right: 5px;
+}
+
+.list-group-item{
+  padding:0.5rem 0.4rem
 }
