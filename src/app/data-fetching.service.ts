@@ -20,7 +20,7 @@ export class DataFetchingService {
     //   params: new HttpParams().set('include_platform', 'false'),
     // });
     // grab the list from local file instead
-    return this.http.get<[]>('./assets/coins-list.json');
+    return this.http.get<[]>('./assets/coins-list-sorted.json');
   }
 
   fetchOneCryptoCurrency(name: string) {

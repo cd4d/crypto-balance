@@ -5,3 +5,9 @@
 .amount-input {
   width: 5rem;
 }
+
+.image-coin {
+  max-width: 18px;
+  vertical-align: text-bottom;
+  margin-right: 5px;
+}

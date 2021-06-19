@@ -14,7 +14,7 @@ export class BalanceService {
   maxNumberOfCoins = 10;
   private currentRate!: any;
   calculatedBalance: any[] = [];
-  chartsData:Coin[] = [];
+  chartsData: Coin[] = [];
 
   constructor(
     private dataFetchingService: DataFetchingService,
@@ -45,6 +45,27 @@ export class BalanceService {
       symbol: 'USDT',
       rateUSD: 1,
       amount: 3000,
+    },
+    {
+      name: 'Dogecoin',
+      id: 'dogecoin',
+      symbol: 'DOGE',
+      rateUSD: 1,
+      amount: 4000,
+    },
+    {
+      name: 'Cardano',
+      id: 'cardano',
+      symbol: 'ADA',
+      rateUSD: 1,
+      amount: 150,
+    },
+    {
+      name: 'Ripple',
+      id: 'ripple',
+      symbol: 'XRP',
+      rateUSD: 1,
+      amount: 200,
     },
   ];
 
@@ -80,8 +101,27 @@ export class BalanceService {
 
   calculateBalance() {
     //const currentBalance = [...this.cryptoBalance];
-    let coinsList = this.cryptoBalance.map((coin) => coin.name);
-    this.dataFetchingService.getRates(coinsList, 'usd').subscribe(
+    console.log(this.cryptoBalance);
+
+    let coinsInBalance = this.cryptoBalance.map((coin) => coin.name);
+
+    // get image
+    let allCoinsList = this.dataFetchingService.fetchCoinsList();
+    if (allCoinsList && allCoinsList.length) {
+      let count = 0;
+      for (let coin of allCoinsList) {
+        this.cryptoBalance.map((crypto) => {
+          if (coin.name.toLowerCase() === crypto.name.toLowerCase()) {
+            crypto.image = coin.image;
+            count++;
+          }
+        });
+        if (count >= allCoinsList.length) {
+          break;
+        }
+      }
+    }
+    this.dataFetchingService.getRates(coinsInBalance, 'usd').subscribe(
       (res) =>
         this.cryptoBalance.map((crypto) => {
           Object.keys(res).forEach((key) => {
@@ -102,11 +142,8 @@ export class BalanceService {
               crypto.weight = crypto.valueUSD / this.total;
             }
           }
-          
+        }),
 
-        })
-        
-        ,
       (error) => {
         console.log('error fetching rates');
       }
@@ -125,10 +162,16 @@ export class BalanceService {
         .subscribe((rate) => {
           this.newCoin.rateUSD = Object.values(rate)[0]['usd'];
         });
+    } else {
+      this.newCoin.rateUSD = coin.rateUSD;
     }
     //console.log(this.newCoin);
-    
-    this.cryptoBalance = [...this.cryptoBalance, this.newCoin]
+    // calculate value
+    if (this.newCoin.rateUSD && this.newCoin.amount) {
+      this.newCoin.valueUSD = this.newCoin.rateUSD * this.newCoin.amount;
+    }
+
+    this.cryptoBalance = [...this.cryptoBalance, this.newCoin];
     this.updateBalance();
   }
 
@@ -138,6 +181,8 @@ export class BalanceService {
     );
     this.updateBalance();
   }
+  // TODO get coin icons from coins list json file
+  getCoinIcons() {}
 
   addSteps(coinList: Coin[]): Coin[] {
     let newCoinList = coinList.map((coin) => {

@@ -47,6 +47,8 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     this.balance = this.balanceService.addSteps(receivedBalance);
     //this.balanceService.addRates()
     this.balanceService.calculateBalance();
+    console.log(this.balance);
+    
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
       (newBalance) => {
         this.balance = this.balanceService.addSteps(newBalance);

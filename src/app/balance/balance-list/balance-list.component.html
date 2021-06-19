@@ -1,6 +1,13 @@
 <h2>Portfolio</h2>
 
-<div *ngIf="balance.length < maxNumberOfCoins">
+<div *ngIf="balance.length < maxNumberOfCoins" class="my-3">
+  <ul class="list-group list-group-horizontal"
+   
+    
+  >
+    <li  *ngFor="let coin of balance.slice(indexFirstCoin, indexLastCoin)" class="list-group-item"><img class="image-coin" src={{coin.image}}>{{ coin.name }}</li>
+  </ul>
+
   <button
     class="btn btn-primary"
     type="button"
@@ -18,7 +25,10 @@
   Maximum number of coins in balance reached ({{ maxNumberOfCoins }}).
 </p>
 
-<p-table [value]="balance.slice(indexFirstCoin, indexLastCoin)">
+<p-table
+  [value]="balance.slice(indexFirstCoin, indexLastCoin)"
+  [autoLayout]="true"
+>
   <ng-template pTemplate="header">
     <tr>
       <th>Name</th>
@@ -50,7 +60,7 @@
             />
           </ng-template>
           <ng-template pTemplate="output">
-            {{ coin.amount | number:"1.0-3"}}
+            {{ coin.amount | number: "1.0-3" }}
           </ng-template>
         </p-cellEditor>
       </td>

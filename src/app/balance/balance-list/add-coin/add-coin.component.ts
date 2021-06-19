@@ -62,6 +62,8 @@ export class AddCoinComponent implements OnInit, OnDestroy {
   }
   onAddCoin() {
     if (this.selectedCoin.name && this.selectedCoin.amount) {
+    console.log('added coin ',this.selectedCoin.name, this.selectedCoin.amount, this.selectedCoin.rateUSD);
+
       this.balanceService.addCoin(this.selectedCoin);
     }
     // reset selected coin
