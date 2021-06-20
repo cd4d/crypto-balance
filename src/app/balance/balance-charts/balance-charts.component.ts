@@ -45,7 +45,7 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
   }
 
   colorScheme = {
-    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
+    domain: ['#007bff', '#FF6384', '#FFCE56', '#AAAAAA'],
   };
 
   ngOnInit(): void {

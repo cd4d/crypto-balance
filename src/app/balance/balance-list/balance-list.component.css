@@ -1,8 +1,8 @@
-h2{
-  display:inline-block;
+h2 {
+  display: inline-block;
 }
 
-button{
+button {
   vertical-align: super;
 }
 
@@ -20,6 +20,22 @@ button{
   margin-right: 5px;
 }
 
-.list-group-item{
-  padding:0.5rem 0.4rem
+.list-group-item {
+  padding: 0.5rem 0rem;
+  border: 0px;
+}
+.list-group-horizontal {
+  justify-content: space-evenly;
+}
+
+/* Media queries */
+@media screen and (max-width: 500px) {
+  .balance-list-table {
+    width: 90%;
+  }
+  .balance-list-table-body {
+    font-size: small;
+    color: rebeccapurple;
+  
+  }
 }

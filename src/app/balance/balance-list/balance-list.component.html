@@ -16,18 +16,18 @@
   Maximum number of coins in balance reached ({{ maxNumberOfCoins }}).
 </p>
 
-<p-table [value]="balance.slice(indexFirstCoin, indexLastCoin)" [autoLayout]="true">
-  <ng-template pTemplate="header">
+<p-table [value]="balance.slice(indexFirstCoin, indexLastCoin)" [sortField]="'value'" [autoLayout]="false" class="balance-list-table">
+  <ng-template pTemplate="header" >
     <tr>
-      <th>Name</th>
-      <th>Symbol</th>
-      <th>Rate (USD)</th>
-      <th>Amount</th>
-      <th>Value</th>
-      <th>Delete</th>
+      <th pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon></th>
+      <th pSortableColumn="symbol">Symbol<p-sortIcon field="symbol"></p-sortIcon></th>
+      <th pSortableColumn="rate">Rate (USD)<p-sortIcon field="rate"></p-sortIcon></th>
+      <th pSortableColumn="amount">Amount<p-sortIcon field="amount"></p-sortIcon></th>
+      <th pSortableColumn="value">Value<p-sortIcon field="value"></p-sortIcon></th>
+      <th >Delete</th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-coin>
+  <ng-template pTemplate="body" let-coin class="balance-list-table-body">
     <tr>
       <td>{{ coin.name }}</td>
       <td>{{ coin.symbol }}</td>

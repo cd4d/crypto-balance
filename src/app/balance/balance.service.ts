@@ -101,16 +101,31 @@ export class BalanceService {
 
   calculateBalance() {
     //const currentBalance = [...this.cryptoBalance];
-    console.log(this.cryptoBalance);
+    //console.log(this.cryptoBalance);
 
     let coinsInBalance = this.cryptoBalance.map((coin) => coin.name);
-
+    // sort by alphabetical order
+    this.cryptoBalance = this.cryptoBalance.sort((a:Coin,b:Coin)=>{
+      let nameA = a.name.toLowerCase()
+      let nameB = b.name.toLowerCase()
+      if(nameA < nameB){
+        return -1 // nameA comes first
+      }
+      if(nameA > nameB){
+        return 1
+      }
+      return 0 // names are equal
+    })
+    console.log(this.cryptoBalance);
+    
     // get image
     let allCoinsList = this.dataFetchingService.fetchCoinsList();
     if (allCoinsList && allCoinsList.length) {
       let count = 0;
       for (let coin of allCoinsList) {
         this.cryptoBalance.map((crypto) => {
+          console.log(count, crypto);
+          
           if (coin.name.toLowerCase() === crypto.name.toLowerCase()) {
             crypto.image = coin.image;
             count++;
