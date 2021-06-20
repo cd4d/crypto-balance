@@ -42,11 +42,10 @@ export class BalanceListComponent implements OnInit, OnDestroy {
   // outputting data to chart
 
   ngOnInit(): void {
-    const receivedBalance = this.balanceService.getBalance();
-    this.balance = this.balanceService.addSteps(receivedBalance);
-    //this.balanceService.addRates()
-    //this.balanceService.calculateBalance();
-    console.log(this.balance);
+    this.balance  = this.balanceService.getBalance();
+    this.balance = this.balanceService.sortBalance(this.balance);
+    this.balanceService.getIcons()
+    //console.log(this.balance);
 
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
       (newBalance) => {

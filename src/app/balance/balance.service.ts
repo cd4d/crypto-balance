@@ -19,7 +19,7 @@ export class BalanceService {
   constructor(
     private dataFetchingService: DataFetchingService,
     private http: HttpClient
-  ) {}
+  ) { }
   private cryptoBalance: Coin[] = [
     {
       name: 'Bitcoin',
@@ -46,12 +46,19 @@ export class BalanceService {
       rateUSD: 1,
       amount: 3000,
     },
+
     {
       name: 'Dogecoin',
       id: 'dogecoin',
       symbol: 'DOGE',
       rateUSD: 1,
       amount: 4000,
+    }, {
+      name: 'Ripple',
+      id: 'ripple',
+      symbol: 'XRP',
+      rateUSD: 1,
+      amount: 200,
     },
     {
       name: 'Cardano',
@@ -59,14 +66,14 @@ export class BalanceService {
       symbol: 'ADA',
       rateUSD: 1,
       amount: 150,
-    },
-    {
-      name: 'Ripple',
-      id: 'ripple',
-      symbol: 'XRP',
+    }, {
+      name: 'ZCash',
+      id: 'zcash',
+      symbol: 'ZEC',
       rateUSD: 1,
       amount: 200,
     },
+
   ];
 
   getBalance() {
@@ -98,44 +105,65 @@ export class BalanceService {
     });
     this.updateBalance();
   }
+  sortBalance(balance: Coin[]) {
+    // sort by alphabetical order
+    return balance.sort((a: Coin, b: Coin) => {
+      let nameA = a.name.toLowerCase()
+      let nameB = b.name.toLowerCase()
+      if (nameA < nameB) {
+        return -1 // nameA comes first
+      }
+      if (nameA > nameB) {
+        return 1
+      }
+      return 0 // names are equal
+    })
+  }
+  getIcons() {
+    // get images
+    let allCoinsList = this.dataFetchingService.fetchCoinsList();
+    this.cryptoBalance = this.sortBalance(this.cryptoBalance)
+    if (allCoinsList && allCoinsList.length) {
+      let count = 0;
+      let iterations = 0
+      let i = 0
+      console.log(this.cryptoBalance.length);
 
+      for (let coin of allCoinsList) {
+        iterations++
+        console.log(count, i, iterations)
+        while (i < this.cryptoBalance.length) {
+          if (this.cryptoBalance[i].name.toLowerCase() === coin.name.toLowerCase()) {
+            this.cryptoBalance[i].image = coin.image
+            console.log(count, i, coin.name);
+            
+            // increment both coins list and balance
+            count++
+            i++
+            break;
+          } else {
+            // increment only coins list
+            count++
+
+            break;
+          }
+        }
+        // break main loop
+        if (count >= this.cryptoBalance.length) {
+          break;
+        }
+      }
+    }
+  }
   calculateBalance() {
     //const currentBalance = [...this.cryptoBalance];
     //console.log(this.cryptoBalance);
 
     let coinsInBalance = this.cryptoBalance.map((coin) => coin.name);
-    // sort by alphabetical order
-    this.cryptoBalance = this.cryptoBalance.sort((a:Coin,b:Coin)=>{
-      let nameA = a.name.toLowerCase()
-      let nameB = b.name.toLowerCase()
-      if(nameA < nameB){
-        return -1 // nameA comes first
-      }
-      if(nameA > nameB){
-        return 1
-      }
-      return 0 // names are equal
-    })
+
     console.log(this.cryptoBalance);
-    
-    // get image
-    let allCoinsList = this.dataFetchingService.fetchCoinsList();
-    if (allCoinsList && allCoinsList.length) {
-      let count = 0;
-      for (let coin of allCoinsList) {
-        this.cryptoBalance.map((crypto) => {
-          console.log(count, crypto);
-          
-          if (coin.name.toLowerCase() === crypto.name.toLowerCase()) {
-            crypto.image = coin.image;
-            count++;
-          }
-        });
-        if (count >= allCoinsList.length) {
-          break;
-        }
-      }
-    }
+
+
     this.dataFetchingService.getRates(coinsInBalance, 'usd').subscribe(
       (res) =>
         this.cryptoBalance.map((crypto) => {
@@ -197,7 +225,7 @@ export class BalanceService {
     this.updateBalance();
   }
   // TODO get coin icons from coins list json file
-  getCoinIcons() {}
+  getCoinIcons() { }
 
   addSteps(coinList: Coin[]): Coin[] {
     let newCoinList = coinList.map((coin) => {
