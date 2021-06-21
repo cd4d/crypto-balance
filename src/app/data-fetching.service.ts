@@ -20,6 +20,7 @@ export class DataFetchingService {
     //   params: new HttpParams().set('include_platform', 'false'),
     // });
     // grab the list from local file instead
+    // converted from js object using https://www.convertjson.com/
     return this.http.get<[]>('./assets/coins-list-sorted.json');
   }
 

@@ -37,15 +37,18 @@ export class BalanceListComponent implements OnInit, OnDestroy {
   // pagination
   indexFirstCoin = 0;
   indexLastCoin = 5;
+  first = 0;
+  last = 5;
   // number of coins per page
   pageSize = 5;
+  rows = 10;
   // outputting data to chart
 
   ngOnInit(): void {
-    this.balance  = this.balanceService.getBalance();
-    this.balance = this.balanceService.sortBalance(this.balance);
-    this.balanceService.getIcons()
-    //console.log(this.balance);
+    this.balance = this.balanceService.getBalance();
+    this.balance = this.balanceService.sortBalanceByValue(this.balance);
+    this.balanceService.getIcons();
+    console.log(this.balance);
 
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
       (newBalance) => {
@@ -69,6 +72,8 @@ export class BalanceListComponent implements OnInit, OnDestroy {
   onDeleteCoin(coin: Coin) {
     this.balanceService.deleteCoin(coin);
   }
+
+
   paginate(event: { first: number; rows: number }) {
     //event.first = Index of the first record
     //event.rows = Number of rows to display in new page

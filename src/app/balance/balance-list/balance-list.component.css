@@ -16,8 +16,7 @@ button {
 
 .image-coin {
   max-width: 18px;
-  vertical-align: text-bottom;
-  margin-right: 5px;
+  text-align: center;
 }
 
 .list-group-item {
@@ -36,6 +35,5 @@ button {
   .balance-list-table-body {
     font-size: small;
     color: rebeccapurple;
-  
   }
 }
