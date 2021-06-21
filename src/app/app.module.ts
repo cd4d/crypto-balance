@@ -22,7 +22,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { TruncatePipe } from './shared/truncate.pipe';
 import { PaginatorModule } from 'primeng/paginator';
-import { ChartModule } from 'primeng/chart';
+//import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   declarations: [
@@ -33,7 +33,7 @@ import { ChartModule } from 'primeng/chart';
     BalanceChartsComponent,
     AddCoinComponent,
     BalanceNewsComponent,
-    TruncatePipe
+    TruncatePipe,
   ],
   imports: [
     BrowserModule,
@@ -49,10 +49,10 @@ import { ChartModule } from 'primeng/chart';
     InputTextModule,
     CardModule,
     PaginatorModule,
-    ChartModule
+    //ChartModule
   ],
 
   providers: [ConfirmationService, DialogService],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
