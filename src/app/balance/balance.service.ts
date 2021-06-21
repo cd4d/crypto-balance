@@ -19,7 +19,7 @@ export class BalanceService {
   constructor(
     private dataFetchingService: DataFetchingService,
     private http: HttpClient
-  ) {}
+  ) { }
   private cryptoBalance: Coin[] = [
     {
       name: 'Bitcoin',
@@ -55,13 +55,6 @@ export class BalanceService {
       amount: 4000,
     },
     {
-      name: 'Ripple',
-      id: 'ripple',
-      symbol: 'XRP',
-      rateUSD: 1,
-      amount: 200,
-    },
-    {
       name: 'Cardano',
       id: 'cardano',
       symbol: 'ADA',
@@ -69,12 +62,14 @@ export class BalanceService {
       amount: 150,
     },
     {
-      name: 'ZCash',
-      id: 'zcash',
-      symbol: 'ZEC',
+      name: 'Ripple',
+      id: 'ripple',
+      symbol: 'XRP',
       rateUSD: 1,
       amount: 200,
     },
+
+
   ];
 
   getBalance() {
@@ -235,7 +230,7 @@ export class BalanceService {
     this.updateBalance();
   }
   // TODO get coin icons from coins list json file
-  getCoinIcons() {}
+  getCoinIcons() { }
 
   addSteps(coinList: Coin[]): Coin[] {
     let newCoinList = coinList.map((coin) => {
