@@ -2,6 +2,7 @@
 
 #Custom
 /src/OLD
+/src/environments
 
 # compiled output
 /dist
