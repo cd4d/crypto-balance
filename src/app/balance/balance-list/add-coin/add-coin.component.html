@@ -3,8 +3,8 @@
     Add coin: {{ selectedCoin.name }}
     {{
     selectedCoin.name &&
-    selectedCoin.rateUSD &&
-    selectedCoin.rateUSD * +coinAmount.value | currency
+    selectedCoin.rate &&
+    selectedCoin.rate * +coinAmount.value | currency: selectedCurrency.toUpperCase()
     }}
     <span *ngIf="error" class="text-danger">Error fetching rate.</span>
   </h6>
@@ -24,13 +24,13 @@
   <div class="col ps-0">
     <div>
       <input pInputText #coinAmount id="add-coin-input-amount" type="number" min="0" placeholder="Amount"
-        (change)="onChangeAmount(coinAmount.value)" />
+        (change)="onChangeAmount(coinAmount.value)" [value]="selectedCoin.amount" />
     </div>
   </div>
 
   <div class="col pt-2">
     <a style="cursor: pointer" (click)="onAddCoin()" *ngIf="selectedCoin.name && selectedCoin.amount"><span
         class="pi pi-check"></span></a>
-    <a style="cursor: pointer" (click)="onToggleAddCoinVisibility()"><span class="pi pi-times"></span></a>
+    <a style="cursor: pointer" (click)="onCloseInput()"><span class="pi pi-times"></span></a>
   </div>
 </div>

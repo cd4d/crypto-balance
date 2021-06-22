@@ -1,3 +1,4 @@
+import { CurrencyPipe } from '@angular/common';
 import {
   AfterContentChecked,
   AfterContentInit,
@@ -24,10 +25,14 @@ import { Coin } from '../coin.model';
 export class BalanceChartsComponent implements OnInit, OnDestroy {
   constructor(
     private balanceService: BalanceService,
-    private dataFetchingService: DataFetchingService
-  ) {}
+    private dataFetchingService: DataFetchingService,
+    private currencyPipe: CurrencyPipe
+  ) { }
   balance: Coin[] = [];
   balanceChangedSub = new Subscription();
+  currencyChangedSub = new Subscription();
+  selectedCurrency = this.balanceService.getSelectedCurrency()
+
   total: number = 0;
   // primeNG chart
   // data: {labels:string[],datasets:[{data:number[]}]} = {labels:[],datasets:[{data:[]}]};
@@ -41,7 +46,8 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
   // view: [number, number] = [700, 300];
 
   valueFormatting(value: number) {
-    return '$' + value.toLocaleString();
+    //let currencyFormatted = this.currencyPipe.transform(this.selectedCurrency.toUpperCase())
+    return this.currencyPipe.transform(value, this.selectedCurrency.toUpperCase())
   }
 
   colorScheme = {
@@ -49,7 +55,8 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
-  
+    console.log(this.currencyPipe.transform(90, this.selectedCurrency.toUpperCase()));
+
     // initialize chart data
     const currentBalance = this.balanceService.getBalance()
     let coinsList = currentBalance.map((coin) => coin.name);
@@ -57,28 +64,28 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
       currentBalance.map((crypto) => {
         Object.keys(res).forEach((key) => {
           if (key === crypto.name.toLowerCase()) {
-            crypto.rateUSD = res[key as keyof object]['usd'];
+            crypto.rate = res[key as keyof object]['usd'];
           }
         });
         // calculate value of each hodling and calculate total
-        if (crypto.rateUSD && crypto.amount) {
-          crypto.valueUSD = crypto.rateUSD * crypto.amount;
+        if (crypto.rate && crypto.amount) {
+          crypto.value = crypto.rate * crypto.amount;
         }
-        if (crypto.valueUSD) {
-          this.total += crypto.valueUSD;
+        if (crypto.value) {
+          this.total += crypto.value;
         }
         // get the weight of each
         if (this.total && this.total > 0) {
-          if (crypto.valueUSD) {
-            crypto.weight = crypto.valueUSD / this.total;
+          if (crypto.value) {
+            crypto.weight = crypto.value / this.total;
           }
         }
       }
 
-      ),error => {console.log('error')},
+      ), error => { console.log('error') },
       () => {
-        
-      this.data = this.updateChartData(currentBalance)
+
+        this.data = this.updateChartData(currentBalance)
       }
 
     );
@@ -90,6 +97,13 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
         this.data = this.updateChartData(receivedBalance);
       }
     );
+    // watch currency changes
+    this.currencyChangedSub = this.balanceService.currencyChanged.subscribe(newCurrency => {
+      this.selectedCurrency = newCurrency
+      console.log("currency changed chart: ", this.selectedCurrency);
+
+    })
+
   }
 
   updateChartData(receivedBalance: Coin[]) {
@@ -107,7 +121,7 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
     // format data to ngx-chart
     let newCrypto = { name: '', value: 0, label: '' };
     newCrypto.name = crypto.name;
-    newCrypto.value = crypto.valueUSD ? crypto.valueUSD : 0;
+    newCrypto.value = crypto.value ? crypto.value : 0;
 
     return newCrypto;
   }
@@ -116,7 +130,7 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
   //   // format data to ngx-chart
   //   let newCrypto = { name: '', value: 0, label: '' };
   //   newCrypto.name = crypto.name;
-  //   newCrypto.value = crypto.valueUSD ? crypto.valueUSD : 0;
+  //   newCrypto.value = crypto.value ? crypto.value : 0;
 
   //   return newCrypto;
   // }
@@ -125,7 +139,7 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
   //   this.data = {labels:[],datasets:[{data:[]}]}
   //   receivedBalance.map((crypto) => {
   //     this.data.labels.push(crypto.name)
-  //     this.data.datasets[0].data.push(crypto.valueUSD ? crypto.valueUSD : 0)
+  //     this.data.datasets[0].data.push(crypto.value ? crypto.value : 0)
   //   });
   //   console.log(this.data);
 
@@ -133,5 +147,6 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.balanceChangedSub.unsubscribe();
+    this.currencyChangedSub.unsubscribe()
   }
 }

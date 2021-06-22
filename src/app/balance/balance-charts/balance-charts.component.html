@@ -11,7 +11,7 @@
     <ng-template #tooltipTemplate let-tooltip="model">
       {{ tooltip.name }}
       <br />
-      {{ tooltip.value | currency: "USD":"symbol":"1.0-2" }}
+      {{ tooltip.value | currency: selectedCurrency.toUpperCase():"symbol":"1.0-2" }}
     </ng-template>
   </ngx-charts-advanced-pie-chart>
 </div>

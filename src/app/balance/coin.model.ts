@@ -4,9 +4,9 @@ export class Coin {
     public name: string, // Bitcoin
     public symbol: string, // BTC
     public id?: string, // bitcoin
-    public rateUSD?: number, // 1? 100? 1000000?
+    public rate?: number, // 1? 100? 1000000?
     public amount?: number, // 0.5
-    public valueUSD?: number, // 0.5? 50? 500000? 
+    public value?: number, // 0.5? 50? 500000? 
     public weight?: number, // x% of the total
     public subUnit?: string, // Satoshi
     public subUnitToUnit?: number, // 100000000 (1BTC = 100000000 Satoshis)

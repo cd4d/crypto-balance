@@ -17,12 +17,14 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     private balanceService: BalanceService,
     private dataFetchingService: DataFetchingService,
     public dialogService: DialogService
-  ) {}
+  ) { }
   balance: Coin[] = [];
   // max nr of coins
   maxNumberOfCoins = 10;
   addCoinFormVisible = false;
   balanceChangedSub = new Subscription();
+  currencyChangedSub = new Subscription();
+  selectedCurrency = this.balanceService.getSelectedCurrency()
   // coin name to be added
   coinName: string = '';
   // first 10 coins
@@ -48,15 +50,20 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     this.balance = this.balanceService.getBalance();
     this.balance = this.balanceService.sortBalanceByValue(this.balance);
     this.balanceService.getIcons();
-    console.log(this.balance);
-
+    //console.log(this.balance);
+    // watch balance changes
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
       (newBalance) => {
         this.balance = this.balanceService.addSteps(newBalance);
         this.balanceService.calculateBalance();
       }
     );
-    // TODO get news from list
+    // watch currency changes
+    this.currencyChangedSub = this.balanceService.currencyChanged.subscribe(newCurrency => {
+      this.selectedCurrency = newCurrency
+      console.log("currency changed list: ", this.selectedCurrency);
+
+    })
   }
 
   toggleAddCoinVisibility = (): void => {
@@ -73,7 +80,7 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     this.balanceService.deleteCoin(coin);
   }
 
-  onCalculateBalance(){
+  onCalculateBalance() {
     this.balanceService.calculateBalance()
   }
 
@@ -90,5 +97,7 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     if (this.ref) {
       this.ref.close();
     }
+    this.balanceChangedSub.unsubscribe()
+    this.currencyChangedSub.unsubscribe()
   }
 }

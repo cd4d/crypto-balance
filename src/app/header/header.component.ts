@@ -15,5 +15,7 @@ export class HeaderComponent implements OnInit {
   onSelectCurrency(event: Event) {
     let newCurrency = (<HTMLInputElement>event.target).value;
     this.balanceService.setCurrency(newCurrency);
+    // update balance with new currency
+    this.balanceService.balanceChanged.next(this.balanceService.getBalance())
   }
 }

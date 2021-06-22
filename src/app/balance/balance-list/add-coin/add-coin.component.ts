@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataFetchingService } from 'src/app/data-fetching.service';
 import { BalanceService } from '../../balance.service';
@@ -13,13 +13,15 @@ export class AddCoinComponent implements OnInit, OnDestroy {
   @Input() onToggleAddCoinVisibility!: () => void;
   @Input() onSearchCoin!: (input: string) => void;
   private searchTerms = new Subject<string>();
-  selectedCoin: Coin = { name: '', symbol: '', id: '', rateUSD: 0 };
+  selectedCoin: Coin = { name: '', symbol: '', id: '', rate: 0 };
   coins$!: Observable<Coin[]>;
-  error:string = ''
+  error: string = ''
+  currencyChangedSub = new Subscription();
+  selectedCurrency = 'usd'
   constructor(
     private balanceService: BalanceService,
     private dataFetchingService: DataFetchingService // public ref: DynamicDialogRef, public config: DynamicDialogConfig
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Search coin
@@ -34,6 +36,14 @@ export class AddCoinComponent implements OnInit, OnDestroy {
       // switch to new search observable each time the term changes
       switchMap((term: string) => this.dataFetchingService.searchCoinList(term))
     );
+
+    // watch currency changes
+    this.currencyChangedSub = this.balanceService.currencyChanged.subscribe(newCurrency => {
+      this.selectedCurrency = newCurrency
+      //console.log("currency changed add coin: ",this.selectedCurrency);
+
+    })
+
   }
   // Push a search term into the observable stream.
   searchCoin(term: string): void {
@@ -43,33 +53,38 @@ export class AddCoinComponent implements OnInit, OnDestroy {
     this.selectedCoin = coin;
     // get the rate of selected coin
     this.dataFetchingService
-      .getRates([coin.id ? coin.id : coin.name.toLowerCase()], 'usd')
+      .getRates([coin.id ? coin.id : coin.name.toLowerCase()], this.selectedCurrency)
       .subscribe((res) => {
         Object.keys(res).forEach((key) => {
           // https://fettblog.eu/typescript-better-object-keys/
-          this.selectedCoin.rateUSD = res[key as keyof object]['usd'];
+          this.selectedCoin.rate = res[key as keyof object][this.selectedCurrency];
         });
-      },error =>{
-        if(error.statusText){this.error = error.statusText}
+      }, error => {
+        if (error.statusText) { this.error = error.statusText }
         else {
           this.error = 'Error getting rate.'
-        }        
+        }
       });
 
     // empty the resulting array by passing empty value
     this.searchTerms.next('');
-    console.log('selected coin ', this.selectedCoin);
+    //console.log('selected coin ', this.selectedCoin);
   }
   onAddCoin() {
     if (this.selectedCoin.name && this.selectedCoin.amount) {
-    console.log('added coin ',this.selectedCoin.name, this.selectedCoin.amount, this.selectedCoin.rateUSD);
+      //console.log('added coin ', this.selectedCoin.name, this.selectedCoin.amount, this.selectedCoin.rate);
 
       this.balanceService.addCoin(this.selectedCoin);
+      this.onCloseInput()
     }
-    // reset selected coin
-    this.selectedCoin = { name: '', symbol: '', id: '', rateUSD: 0 };
+  }
+  onCloseInput() {
+    // reset selected coin and error message
+    this.selectedCoin = { name: '', symbol: '', id: '', rate: 0, amount: 0 };
+    this.error = ''
     this.onToggleAddCoinVisibility();
   }
+
   onChangeAmount(amount: string) {
     if (amount) {
       // convert string to number
@@ -78,5 +93,6 @@ export class AddCoinComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     this.searchTerms.unsubscribe();
+    this.currencyChangedSub.unsubscribe()
   }
 }

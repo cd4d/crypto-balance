@@ -10,20 +10,21 @@ import { Coin } from './coin.model';
 export class BalanceService {
   public total: number = 0;
   balanceChanged = new Subject<Coin[]>();
+  currencyChanged = new Subject<string>()
   newCoin!: Coin;
   maxNumberOfCoins = 10;
   calculatedBalance: any[] = [];
   chartsData: Coin[] = [];
   CURRENCIES: string[] = [
-    'aud',
+    'usd',
+    'eur',
     'cad',
     'chf',
+    'aud',
     'cny',
-    'eur',
     'jpy',
     'krw',
     'rub',
-    'usd',
   ];
   selectedCurrency: string = 'usd';
   private cryptoBalance: Coin[] = [
@@ -31,7 +32,7 @@ export class BalanceService {
       name: 'Bitcoin',
       id: 'bitcoin',
       symbol: 'BTC',
-      rateUSD: 30000,
+      rate: 30000,
       amount: 0.5,
       subUnit: 'Satoshi',
       subUnitToUnit: 100000000,
@@ -40,7 +41,7 @@ export class BalanceService {
       name: 'Ethereum',
       id: 'ethereum',
       symbol: 'ETH',
-      rateUSD: 2000,
+      rate: 2000,
       amount: 3,
       subUnit: 'GWei',
       subUnitToUnit: 1000000000,
@@ -49,7 +50,7 @@ export class BalanceService {
       name: 'Tether',
       id: 'tether',
       symbol: 'USDT',
-      rateUSD: 1,
+      rate: 1,
       amount: 3000,
     },
 
@@ -57,35 +58,39 @@ export class BalanceService {
       name: 'Dogecoin',
       id: 'dogecoin',
       symbol: 'DOGE',
-      rateUSD: 1,
+      rate: 1,
       amount: 4000,
     },
     {
       name: 'Cardano',
       id: 'cardano',
       symbol: 'ADA',
-      rateUSD: 1,
+      rate: 1,
       amount: 150,
     },
     {
       name: 'Ripple',
       id: 'ripple',
       symbol: 'XRP',
-      rateUSD: 1,
+      rate: 1,
       amount: 200,
     },
   ];
   constructor(
     private dataFetchingService: DataFetchingService,
     private http: HttpClient
-  ) {}
+  ) { }
   // set currency for rates (usd, eur...)
   setCurrency(newCurrency: string) {
     if (this.CURRENCIES.includes(newCurrency.toLowerCase())) {
       this.selectedCurrency = newCurrency;
+      this.currencyChanged.next(newCurrency)
     } else {
       console.log(newCurrency, ' not in list');
     }
+  }
+  getSelectedCurrency() {
+    return this.selectedCurrency
   }
   getBalance() {
     return [...this.cryptoBalance];
@@ -133,8 +138,8 @@ export class BalanceService {
   sortBalanceByValue(balance: Coin[]) {
     // sort by alphabetical order
     return balance.sort((a: Coin, b: Coin) => {
-      let valueA = a.valueUSD;
-      let valueB = b.valueUSD;
+      let valueA = a.value;
+      let valueB = b.value;
       if (valueA && valueB && valueA < valueB) {
         return -1; // valueA comes first
       }
@@ -150,9 +155,8 @@ export class BalanceService {
     this.cryptoBalance = this.sortBalanceById(this.cryptoBalance);
     if (allCoinsList && allCoinsList.length) {
       let count = 0;
-      let iterations = 0;
       let i = 0;
-      console.log(this.cryptoBalance);
+      //console.log(this.cryptoBalance);
 
       for (let coin of allCoinsList) {
         // loop through all coins supported
@@ -199,23 +203,23 @@ export class BalanceService {
           this.cryptoBalance.map((crypto) => {
             Object.keys(res).forEach((key) => {
               if (key === crypto.name.toLowerCase()) {
-                crypto.rateUSD =
+                crypto.rate =
                   res[key as keyof object][
-                    this.selectedCurrency ? this.selectedCurrency : 'usd'
+                  this.selectedCurrency ? this.selectedCurrency : 'usd'
                   ];
               }
             });
             // calculate value of each hodling and calculate total
-            if (crypto.rateUSD && crypto.amount) {
-              crypto.valueUSD = +crypto.rateUSD * +crypto.amount;
+            if (crypto.rate && crypto.amount) {
+              crypto.value = +crypto.rate * +crypto.amount;
             }
-            if (crypto.valueUSD) {
-              this.total += crypto.valueUSD;
+            if (crypto.value) {
+              this.total += crypto.value;
             }
             // get the weight of each
             if (this.total && this.total > 0) {
-              if (crypto.valueUSD) {
-                crypto.weight = crypto.valueUSD / this.total;
+              if (crypto.value) {
+                crypto.weight = crypto.value / this.total;
               }
             }
           }),
@@ -234,7 +238,7 @@ export class BalanceService {
       return;
     }
     this.newCoin = coin;
-    if (!coin.rateUSD) {
+    if (!coin.rate) {
       console.log('getting rates');
       this.dataFetchingService
         .getRates(
@@ -242,17 +246,17 @@ export class BalanceService {
           this.selectedCurrency ? this.selectedCurrency : 'usd'
         )
         .subscribe((rate) => {
-          this.newCoin.rateUSD = Object.values(rate)[0][
+          this.newCoin.rate = Object.values(rate)[0][
             this.selectedCurrency ? this.selectedCurrency : 'usd'
           ];
         });
     } else {
-      this.newCoin.rateUSD = coin.rateUSD;
+      this.newCoin.rate = coin.rate;
     }
     //console.log(this.newCoin);
     // calculate value
-    if (this.newCoin.rateUSD && this.newCoin.amount) {
-      this.newCoin.valueUSD = +this.newCoin.rateUSD * +this.newCoin.amount;
+    if (this.newCoin.rate && this.newCoin.amount) {
+      this.newCoin.value = +this.newCoin.rate * +this.newCoin.amount;
     }
 
     this.cryptoBalance = [...this.cryptoBalance, this.newCoin];
@@ -268,12 +272,12 @@ export class BalanceService {
 
   addSteps(coinList: Coin[]): Coin[] {
     let newCoinList = coinList.map((coin) => {
-      if (coin.rateUSD && coin.rateUSD > 0) {
+      if (coin.rate && coin.rate > 0) {
         // minValue and maxValue for slider (not implemented)
         coin.minValue =
-          coin.rateUSD > 1 ? +(1 / coin.rateUSD).toFixed(5) : coin.rateUSD;
-        coin.maxValue = +(1000000 / coin.rateUSD).toFixed(2); // up to $1 million for each coin
-        coin.editStep = this.defaultStep(coin.rateUSD);
+          coin.rate > 1 ? +(1 / coin.rate).toFixed(5) : coin.rate;
+        coin.maxValue = +(1000000 / coin.rate).toFixed(2); // up to $1 million for each coin
+        coin.editStep = this.defaultStep(coin.rate);
       }
       return coin;
     });
