@@ -1,7 +1,21 @@
-<div class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a href="#" class="navbar-brand">Crypto Balance</a>
+<header class="p-3 mb-4 border-bottom">
+  <div class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a href="#" class="navbar-brand">Crypto Balance</a>
+      </div>
+      <div class="col-md-3 text-end">
+        <select name="currency" id="currency" (change)="onSelectCurrency($event)"
+        [(ngModel)]="selectedCurrency">
+          <option
+            #currencyOption
+            *ngFor="let currency of currenciesList"
+            [value]="currency"
+          >
+            {{ currency }}
+          </option>
+        </select>
+      </div>
     </div>
   </div>
-</div>
+</header>

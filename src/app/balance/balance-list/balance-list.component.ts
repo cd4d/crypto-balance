@@ -73,6 +73,9 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     this.balanceService.deleteCoin(coin);
   }
 
+  onCalculateBalance(){
+    this.balanceService.calculateBalance()
+  }
 
   paginate(event: { first: number; rows: number }) {
     //event.first = Index of the first record
