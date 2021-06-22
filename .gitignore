@@ -3,6 +3,8 @@
 #Custom
 /src/OLD
 .env
+/src/environments/environments.prod.ts
+/src/environments/environments.ts
 # compiled output
 /dist
 /tmp
