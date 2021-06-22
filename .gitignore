@@ -2,8 +2,7 @@
 
 #Custom
 /src/OLD
-/src/environments
-
+.env
 # compiled output
 /dist
 /tmp
