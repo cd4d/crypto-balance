@@ -97,11 +97,11 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
     // Subscribe to update crypto data
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
       (receivedBalance) => {
-        console.log('balance changed in chart: ', receivedBalance);
+        //console.log('balance changed in chart: ', receivedBalance);
 
         this.data = [];
         this.data = this.updateChartData(receivedBalance);
-        console.log('new data: ', this.data);
+        // console.log('new data: ', this.data);
       }
     );
     // watch currency changes

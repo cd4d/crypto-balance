@@ -234,7 +234,7 @@ export class BalanceService {
         () => {
           // after completion of request, emit the event to subscribers: balance-list and balance-chart
           this.balanceChanged.next(tempBalance)
-          console.log('got rates');
+          // console.log('got rates');
         }
       );
   }
@@ -245,7 +245,7 @@ export class BalanceService {
     }
     this.newCoin = coin;
     if (!coin.rate) {
-      console.log('getting rates');
+      // console.log('getting rates');
       this.dataFetchingService
         .getRates(
           [coin.id ? coin.id : coin.name.toLowerCase()],
