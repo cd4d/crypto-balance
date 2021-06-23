@@ -2,11 +2,16 @@
   <div class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a href="#" class="navbar-brand">Crypto Balance</a>
+        <a href="#" class="navbar-brand">Crypto Balance Calculator (Angular)</a>
       </div>
       <div class="col-md-3">
-        <select class="form-select w-auto float-end me-3" name="currency" id="currency" (change)="onSelectCurrency($event)"
-        [(ngModel)]="selectedCurrency">
+        <select
+          class="form-select w-auto float-end me-3"
+          name="currency"
+          id="currency"
+          (change)="onSelectCurrency($event)"
+          [(ngModel)]="selectedCurrency"
+        >
           <option
             #currencyOption
             *ngFor="let currency of currenciesList"

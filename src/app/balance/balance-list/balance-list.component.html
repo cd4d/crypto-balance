@@ -1,31 +1,52 @@
 <h2>Portfolio</h2>
 <!-- Add coin button -->
-<button class="btn btn-primary ms-4 btn-sm" type="button" (click)="toggleAddCoinVisibility()"
-  *ngIf="!addCoinFormVisible">
+<button
+  class="btn btn-primary ms-4 btn-sm"
+  type="button"
+  (click)="toggleAddCoinVisibility()"
+  *ngIf="!addCoinFormVisible"
+>
   Add coin
 </button>
 <!-- Refresh rates button -->
-<button class="btn btn-secondary mt-1 me-3 btn-sm float-end" type="button" (click)="onCalculateBalance()"
-  *ngIf="!addCoinFormVisible">
+<button
+  class="btn btn-secondary mt-1 me-3 btn-sm float-end"
+  type="button"
+  (click)="onCalculateBalance()"
+  *ngIf="!addCoinFormVisible"
+>
   <i class="pi pi-refresh" aria-hidden="true"></i>
-  Refresh rates
+  <span class="d-sm-none d-lg-inline"> Refresh rates</span>
 </button>
 <!-- Adding coin input, using hidden inst. of ngif to watch currency changes  -->
-<app-add-coin [hidden]="!addCoinFormVisible" [onToggleAddCoinVisibility]="toggleAddCoinVisibility"></app-add-coin>
+<app-add-coin
+  [hidden]="!addCoinFormVisible"
+  [onToggleAddCoinVisibility]="toggleAddCoinVisibility"
+></app-add-coin>
 
 <p *ngIf="balance.length >= maxNumberOfCoins" class="font-italic">
   Maximum number of coins in balance reached ({{ maxNumberOfCoins }}).
 </p>
 <!-- Table listing holdings -->
-<p-table [value]="balance" [paginator]="true" [rows]="pageSize" [sortField]="'value'" [sortOrder]="-1"
-  [autoLayout]="false" class="balance-list-table">
-  >
+<p-table
+  [value]="balance"
+  [paginator]="true"
+  [rows]="pageSize"
+  [sortField]="'value'"
+  [sortOrder]="-1"
+  [autoLayout]="false"
+  class="balance-list-table"
+>
   <ng-template pTemplate="header">
     <tr>
       <th pSortableColumn="name">Name</th>
-      <th>Icon</th>
-      <th pSortableColumn="symbol">Symbol</th>
-      <th pSortableColumn="rate">Rate ({{selectedCurrency.toUpperCase()}})</th>
+      <th class="d-none d-sm-none d-lg-table-cell">Icon</th>
+      <th class="d-none d-sm-none d-lg-table-cell" pSortableColumn="symbol">
+        Symbol
+      </th>
+      <th pSortableColumn="rate">
+        Rate ({{ selectedCurrency.toUpperCase() }})
+      </th>
       <th pSortableColumn="amount">Amount</th>
       <th pSortableColumn="value">Value</th>
       <th>Delete</th>
@@ -34,27 +55,50 @@
   <ng-template pTemplate="body" let-coin class="balance-list-table-body">
     <tr>
       <td>{{ coin.name }}</td>
-      <td style="text-align: center">
+      <!-- hide on small screen with bootstrap -->
+      <td class="d-none d-sm-none d-lg-table-cell" style="text-align: center">
         <img class="image-coin" src="{{ coin.image }}" />
       </td>
-      <td>{{ coin.symbol }}</td>
-      <td>{{ coin.rate | currency: selectedCurrency.toUpperCase():"symbol":"1.0-2" }}</td>
+      <td class="d-none d-sm-none d-lg-table-cell">{{ coin.symbol }}</td>
+      <td>
+        {{
+          coin.rate | currency: selectedCurrency.toUpperCase():"symbol":"1.0-2"
+        }}
+      </td>
       <td pEditableColumn>
-        <p-cellEditor>
+        <p-cellEditor class="text-input">
           <ng-template pTemplate="input">
-            <input #inputAmount min="0" type="number" [(ngModel)]="coin.amount" name="amount" step="{{ coin.editStep }}"
+            <input
+              #inputAmount
+              min="0"
+              type="number"
+              [(ngModel)]="coin.amount"
+              name="amount"
+              step="{{ coin.editStep }}"
               (blur)="onChangeAmount(coin.ticker, +inputAmount.value)"
-              (input)="onChangeAmount(coin.ticker, +inputAmount.value)" class="amount-input" />
+              (input)="onChangeAmount(coin.ticker, +inputAmount.value)"
+              class="amount-input"
+            />
           </ng-template>
           <ng-template pTemplate="output">
             {{ coin.amount | number: "1.0-3" }}
           </ng-template>
         </p-cellEditor>
       </td>
-      <td>{{ coin.value | currency: selectedCurrency.toUpperCase():"symbol":"1.0-2" }}</td>
+      <td>
+        {{
+          coin.value | currency: selectedCurrency.toUpperCase():"symbol":"1.0-2"
+        }}
+      </td>
       <td style="text-align: center">
-        <button pButton pRipple type="button" icon="pi pi-times" (click)="onDeleteCoin(coin)"
-          class="p-button-rounded p-button-text p-button-danger"></button>
+        <button
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-times"
+          (click)="onDeleteCoin(coin)"
+          class="p-button-rounded p-button-text p-button-danger"
+        ></button>
       </td>
     </tr>
   </ng-template>

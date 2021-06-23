@@ -55,13 +55,12 @@ export class BalanceListComponent implements OnInit, OnDestroy {
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
       (newBalance) => {
         this.balance = this.balanceService.addSteps(newBalance);
-        this.balanceService.calculateBalance();
       }
     );
     // watch currency changes
     this.currencyChangedSub = this.balanceService.currencyChanged.subscribe(newCurrency => {
       this.selectedCurrency = newCurrency
-      console.log("currency changed list: ", this.selectedCurrency);
+      //console.log("currency changed list: ", this.selectedCurrency);
 
     })
   }

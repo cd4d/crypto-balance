@@ -188,6 +188,7 @@ export class BalanceService {
   calculateBalance() {
     let coinsInBalance = this.cryptoBalance.map((coin) => coin.name);
     //console.log(this.cryptoBalance);
+    let tempBalance:Coin[] = []
     console.log(
       'getting rates in: ',
       this.selectedCurrency ? this.selectedCurrency : 'usd'
@@ -222,12 +223,17 @@ export class BalanceService {
                 crypto.weight = crypto.value / this.total;
               }
             }
-          }),
+            // store calculated balance
+            tempBalance = this.cryptoBalance
+          }
+          ),
 
         (error) => {
           console.log('error fetching rates');
         },
         () => {
+          // after completion of request, emit the event to subscribers: balance-list and balance-chart
+          this.balanceChanged.next(tempBalance)
           console.log('got rates');
         }
       );

@@ -12,8 +12,12 @@ button {
 
 .amount-input {
   width: 5rem;
+  
 }
-
+.text-input{
+  padding-left:1rem;
+  padding-right:1rem;
+}
 .image-coin {
   max-width: 18px;
   text-align: center;
@@ -26,14 +30,16 @@ button {
 .list-group-horizontal {
   justify-content: space-evenly;
 }
-
+td{
+  font-size:medium
+}
 /* Media queries */
-@media screen and (max-width: 500px) {
+@media  (max-width: 500px) {
   .balance-list-table {
     width: 90%;
   }
-  .balance-list-table-body {
+  td {
     font-size: small;
-    color: rebeccapurple;
   }
 }
+

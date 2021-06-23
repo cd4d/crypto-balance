@@ -27,12 +27,15 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
     private balanceService: BalanceService,
     private dataFetchingService: DataFetchingService,
     private currencyPipe: CurrencyPipe
-  ) { }
+  ) {}
   balance: Coin[] = [];
   balanceChangedSub = new Subscription();
   currencyChangedSub = new Subscription();
-  selectedCurrency = this.balanceService.getSelectedCurrency()
-
+  selectedCurrency = this.balanceService.getSelectedCurrency();
+  formattedCurrency = this.currencyPipe.transform(
+    0,
+    this.selectedCurrency.toUpperCase()
+  );
   total: number = 0;
   // primeNG chart
   // data: {labels:string[],datasets:[{data:number[]}]} = {labels:[],datasets:[{data:[]}]};
@@ -45,65 +48,68 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
   // Using dynamic size instead: https://github.com/swimlane/ngx-charts/issues/1096
   // view: [number, number] = [700, 300];
 
-  valueFormatting(value: number) {
-    //let currencyFormatted = this.currencyPipe.transform(this.selectedCurrency.toUpperCase())
-    return this.currencyPipe.transform(value, this.selectedCurrency.toUpperCase())
-  }
+  // using arrow function to bind 'this'
+  valueFormatting = (value: number) => {
+    return this.currencyPipe.transform(
+      value,
+      this.selectedCurrency.toUpperCase()
+    );
+  };
 
   colorScheme = {
     domain: ['#007bff', '#FF6384', '#FFCE56', '#AAAAAA'],
   };
 
   ngOnInit(): void {
-    console.log(this.currencyPipe.transform(90, this.selectedCurrency.toUpperCase()));
-
     // initialize chart data
-    const currentBalance = this.balanceService.getBalance()
+    const currentBalance = this.balanceService.getBalance();
     let coinsList = currentBalance.map((coin) => coin.name);
-    this.dataFetchingService.getRates(coinsList, 'usd').subscribe((res) =>
-      currentBalance.map((crypto) => {
-        Object.keys(res).forEach((key) => {
-          if (key === crypto.name.toLowerCase()) {
-            crypto.rate = res[key as keyof object]['usd'];
+    this.dataFetchingService.getRates(coinsList, 'usd').subscribe(
+      (res) =>
+        currentBalance.map((crypto) => {
+          Object.keys(res).forEach((key) => {
+            if (key === crypto.name.toLowerCase()) {
+              crypto.rate = res[key as keyof object]['usd'];
+            }
+          });
+          // calculate value of each hodling and calculate total
+          if (crypto.rate && crypto.amount) {
+            crypto.value = crypto.rate * crypto.amount;
           }
-        });
-        // calculate value of each hodling and calculate total
-        if (crypto.rate && crypto.amount) {
-          crypto.value = crypto.rate * crypto.amount;
-        }
-        if (crypto.value) {
-          this.total += crypto.value;
-        }
-        // get the weight of each
-        if (this.total && this.total > 0) {
           if (crypto.value) {
-            crypto.weight = crypto.value / this.total;
+            this.total += crypto.value;
           }
-        }
-      }
-
-      ), error => { console.log('error') },
+          // get the weight of each
+          if (this.total && this.total > 0) {
+            if (crypto.value) {
+              crypto.weight = crypto.value / this.total;
+            }
+          }
+        }),
+      (error) => {
+        console.log('error');
+      },
       () => {
-
-        this.data = this.updateChartData(currentBalance)
+        this.data = this.updateChartData(currentBalance);
       }
-
     );
 
     // Subscribe to update crypto data
     this.balanceChangedSub = this.balanceService.balanceChanged.subscribe(
       (receivedBalance) => {
+        console.log('balance changed in chart: ', receivedBalance);
+
         this.data = [];
         this.data = this.updateChartData(receivedBalance);
+        console.log('new data: ', this.data);
       }
     );
     // watch currency changes
-    this.currencyChangedSub = this.balanceService.currencyChanged.subscribe(newCurrency => {
-      this.selectedCurrency = newCurrency
-      console.log("currency changed chart: ", this.selectedCurrency);
-
-    })
-
+    this.currencyChangedSub = this.balanceService.currencyChanged.subscribe(
+      (newCurrency) => {
+        this.selectedCurrency = newCurrency;
+      }
+    );
   }
 
   updateChartData(receivedBalance: Coin[]) {
@@ -147,6 +153,6 @@ export class BalanceChartsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.balanceChangedSub.unsubscribe();
-    this.currencyChangedSub.unsubscribe()
+    this.currencyChangedSub.unsubscribe();
   }
 }

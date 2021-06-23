@@ -16,6 +16,6 @@ export class HeaderComponent implements OnInit {
     let newCurrency = (<HTMLInputElement>event.target).value;
     this.balanceService.setCurrency(newCurrency);
     // update balance with new currency
-    this.balanceService.balanceChanged.next(this.balanceService.getBalance())
+    this.balanceService.updateBalance()
   }
 }
